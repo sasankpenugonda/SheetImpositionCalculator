@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sticker Printing Guides & Tutorials | Sasank Tools</title>
+  <meta name="description" content="Master sticker printing. Learn how to optimize sheets, calculate yields, understand bleed, margins, and gaps to reduce waste and cost.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ── Design Tokens (Consistent with main tool) ── */
+    :root {
+      --bg: #000000;
+      --surface-1: rgba(30, 30, 32, 0.75);
+      --surface-2: #1C1C1E;
+      --surface-3: #2C2C2E;
+      --border: rgba(255, 255, 255, 0.1);
+      --border-hover: rgba(255, 255, 255, 0.2);
+      --text: #F2F2F7;
+      --text-2: #EBEBF5;
+      --text-3: rgba(235, 235, 245, 0.6);
+      --blue: #0A84FF;
+      --blue-glow: rgba(10, 132, 255, 0.15);
+      --cyan: #64D2FF;
+      --cyan-glow: rgba(100, 210, 255, 0.15);
+      --emerald: #30D158;
+      --emerald-glow: rgba(48, 209, 88, 0.15);
+      --rose: #FF453A;
+      --rose-glow: rgba(255, 69, 58, 0.15);
+      --amber: #FF9F0A;
+      --amber-glow: rgba(255, 159, 10, 0.15);
+      --radius: 16px;
+      --font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+      font-smoothing: antialiased;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* ── Decorative Background Glows ── */
+    body::before {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(10, 132, 255, 0.15) 0%, transparent 70%);
+      top: -100px;
+      right: -100px;
+      z-index: -1;
+      pointer-events: none;
+    }
+    body::after {
+      content: '';
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(100, 210, 255, 0.08) 0%, transparent 70%);
+      bottom: 10%;
+      left: -150px;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* ── Header ── */
+    header {
+      padding: 1.25rem 2rem;
+      border-bottom: 0.5px solid var(--border);
+      background: var(--surface-1);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      position: sticky; top: 0; z-index: 50;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    header h1 a {
+      font-size: 1.2rem; font-weight: 600;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .header-nav {
+      display: flex;
+      gap: 1.5rem;
+      margin-left: 2rem;
+      margin-right: auto;
+    }
+    .header-nav a {
+      color: var(--text-3);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: color 0.15s, border-bottom-color 0.15s;
+      padding: 0.25rem 0;
+      border-bottom: 2px solid transparent;
+    }
+    .header-nav a:hover {
+      color: var(--text);
+    }
+    .header-nav a.active {
+      color: var(--text);
+      border-bottom-color: var(--blue);
+      font-weight: 600;
+    }
+
+    /* ── Main Layout ── */
+    main {
+      flex: 1;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+      width: 100%;
+    }
+
+    /* ── Hero Section ── */
+    .hero {
+      text-align: center;
+      margin-bottom: 4.5rem;
+    }
+    .hero h2 {
+      font-size: 3rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, #FFFFFF 30%, #a2a2a7 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1rem;
+    }
+    .hero p {
+      font-size: 1.2rem;
+      color: var(--text-3);
+      max-width: 600px;
+      margin: 0 auto;
+      font-weight: 400;
+    }
+
+    /* ── Grid Layout ── */
+    .post-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    /* ── Article Cards ── */
+    .post-card {
+      background: var(--surface-2);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2.25rem;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    .post-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, transparent 100%);
+      pointer-events: none;
+    }
+    .post-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(255, 255, 255, 0.25);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+    
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .tag {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+    }
+    .tag.calc {
+      background: var(--cyan-glow);
+      color: var(--cyan);
+      border: 0.5px solid rgba(100, 210, 255, 0.2);
+    }
+    .tag.prep {
+      background: var(--emerald-glow);
+      color: var(--emerald);
+      border: 0.5px solid rgba(48, 209, 88, 0.2);
+    }
+    .tag.preset {
+      background: var(--amber-glow);
+      color: var(--amber);
+      border: 0.5px solid rgba(255, 159, 10, 0.2);
+    }
+    .tag.material {
+      background: var(--rose-glow);
+      color: var(--rose);
+      border: 0.5px solid rgba(255, 69, 58, 0.2);
+    }
+    .read-time {
+      font-size: 0.75rem;
+      color: var(--text-3);
+    }
+
+    .post-card h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.01em;
+    }
+    .post-card h3 a {
+      color: var(--text);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .post-card h3 a:hover {
+      color: var(--blue);
+    }
+    
+    .post-card p {
+      color: var(--text-3);
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+      flex-grow: 1;
+    }
+
+    .post-card .read-more {
+      align-self: flex-start;
+      color: var(--blue);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      transition: gap 0.2s;
+    }
+    .post-card:hover .read-more {
+      gap: 0.5rem;
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 0.5px solid var(--border);
+      padding: 3rem 2rem;
+      text-align: center;
+      background: var(--surface-2);
+      margin-top: auto;
+    }
+    footer nav {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 1.5rem;
+    }
+    footer a {
+      color: var(--text-3);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    footer a:hover {
+      color: var(--text);
+    }
+    footer p {
+      color: var(--text-3);
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>📐 Sticker Imposition</h1>
+  <nav class="header-nav">
+    <a href="../index.html">Calculator</a>
+    <a href="./index.html" class="active">Guides & Blog</a>
+  </nav>
+</header>
+
+<main>
+  <div class="hero">
+    <h2>Printing Guides & Optimization</h2>
+    <p>Everything you need to know about preparing layouts, reducing print costs, and designing print-ready sticker files.</p>
+  </div>
+
+  <div class="post-grid">
+    <article class="post-card">
+      <div class="card-meta">
+        <span class="tag calc">Calculations</span>
+        <span class="read-time">4 min read</span>
+      </div>
+      <h3><a href="how-to-calculate-stickers-per-sheet.html">How to Calculate How Many Stickers Fit on a Sheet</a></h3>
+      <p>Stop guessing your sticker yields. Learn the step-by-step math behind sheet imposition and how to pack your artwork for maximum efficiency and minimum waste.</p>
+      <a href="how-to-calculate-stickers-per-sheet.html" class="read-more">Read Guide <span>&rarr;</span></a>
+    </article>
+
+    <article class="post-card">
+      <div class="card-meta">
+        <span class="tag prep">Pre-Press</span>
+        <span class="read-time">3 min read</span>
+      </div>
+      <h3><a href="understanding-print-margins-and-bleed.html">Understanding Bleed, Margins, and Gaps in Printing</a></h3>
+      <p>What is bleed? Why do you need a gap? Discover the essential print constraints that dictate how your files should be set up before sending them to the printer.</p>
+      <a href="understanding-print-margins-and-bleed.html" class="read-more">Read Guide <span>&rarr;</span></a>
+    </article>
+
+    <article class="post-card">
+      <div class="card-meta">
+        <span class="tag preset">Print Sheet Layouts</span>
+        <span class="read-time">3 min read</span>
+      </div>
+      <h3><a href="best-sticker-sheet-presets.html">Best Sticker Sheet Presets for Commercial Printing</a></h3>
+      <p>Choosing between 13x19 Super B, 12x18, A4, or Letter? We outline the yield math differences and help you select the ideal paper format for bulk runs.</p>
+      <a href="best-sticker-sheet-presets.html" class="read-more">Read Guide <span>&rarr;</span></a>
+    </article>
+
+    <article class="post-card">
+      <div class="card-meta">
+        <span class="tag material">Materials</span>
+        <span class="read-time">5 min read</span>
+      </div>
+      <h3><a href="choosing-right-sticker-material.html">How to Choose the Right Sticker Material for Packaging</a></h3>
+      <p>Vinyl vs. paper, matte vs. glossy, and transparent options. Learn how material selection impacts cut accuracy, ink durability, and overall product presentation.</p>
+      <a href="choosing-right-sticker-material.html" class="read-more">Read Guide <span>&rarr;</span></a>
+    </article>
+  </div>
+</main>
+
+<footer>
+  <nav>
+    <a href="../index.html">Calculator</a>
+    <a href="index.html">Blog</a>
+    <a href="https://github.com/Sasank" target="_blank">Contact</a>
+  </nav>
+  <p>&copy; 2026 Sasank Tools. All rights reserved. A free resource for the printing community.</p>
+</footer>
+
+</body>
+</html>

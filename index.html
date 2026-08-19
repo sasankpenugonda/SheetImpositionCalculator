@@ -1,0 +1,1885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sticker Sheet Imposition Calculator & Layout Optimizer | Free Print Tool</title>
+  <meta name="description" content="Free tool to calculate how many stickers fit on a print sheet. Visualize imposition layouts with bleed, gap, and margin constraints for professional printing.">
+  <meta name="keywords" content="sticker sheet calculator, imposition calculator, print layout optimizer, stickers per sheet, print bleed calculator, sticker printing, print margin">
+  <meta name="author" content="Sasank Tools">
+  <link rel="canonical" href="https://example.com/stickersheetcalculator/">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://example.com/stickersheetcalculator/">
+  <meta property="og:title" content="Sticker Sheet Imposition Calculator & Layout Optimizer">
+  <meta property="og:description" content="Calculate exactly how many stickers fit on your print sheet. Automatically optimizes for bleed, margins, and gaps. Free, instant, and private.">
+  <meta property="og:image" content="https://example.com/stickersheetcalculator/og-image.jpg">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://example.com/stickersheetcalculator/">
+  <meta property="twitter:title" content="Sticker Sheet Imposition Calculator & Layout Optimizer">
+  <meta property="twitter:description" content="Calculate exactly how many stickers fit on your print sheet. Automatically optimizes for bleed, margins, and gaps. Free, instant, and private.">
+  <meta property="twitter:image" content="https://example.com/stickersheetcalculator/og-image.jpg">
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Sticker Sheet Imposition Calculator",
+      "url": "https://example.com/stickersheetcalculator/",
+      "description": "Calculate how many stickers fit on a print sheet. Visualize layouts with bleed, gap, and margin constraints.",
+      "applicationCategory": "DesignApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to Calculate Stickers Per Sheet",
+      "description": "Learn how to calculate and optimize how many stickers fit on a print sheet (imposition) using our free tool.",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "name": "Set Sheet and Cover Sizes",
+          "text": "Enter your physical paper size (e.g. 13x19) and the maximum size of your sticker."
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Configure Print Constraints",
+          "text": "Set your bleed, cutting gap, margin, and gripper edge based on your printer's specifications."
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Select Optimal Layout",
+          "text": "Choose from the generated suggestions to maximize efficiency and total yield."
+        }
+      ]
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is print bleed?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Bleed is the extra artwork printed beyond the final cut line. This ensures that if the cutter is slightly misaligned, you don't end up with an ugly white border on your sticker."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is a gripper edge in printing?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A gripper edge is an unprintable margin (typically 0.4 to 0.6 inches) on one side of the paper where the printing press mechanically grabs the sheet to pull it through the machine."
+          }
+        }
+      ]
+    }
+  ]
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ── Design Tokens ── */
+    :root {
+      --bg: #000000;
+      --surface-1: rgba(30, 30, 32, 0.75);
+      --surface-2: #1C1C1E;
+      --surface-3: #2C2C2E;
+      --border: rgba(255, 255, 255, 0.1);
+      --border-hover: rgba(255, 255, 255, 0.2);
+      --text: #F2F2F7;
+      --text-2: #EBEBF5;
+      --text-3: rgba(235, 235, 245, 0.6);
+      --blue: #0A84FF;
+      --blue-glow: rgba(10, 132, 255, 0.3);
+      --cyan: #64D2FF;
+      --emerald: #30D158;
+      --rose: #FF453A;
+      --amber: #FF9F0A;
+      --radius: 12px;
+      --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+      font-smoothing: antialiased;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Header ── */
+    header {
+      padding: 1rem 1.5rem;
+      border-bottom: 0.5px solid var(--border);
+      background: rgba(30, 30, 32, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      position: sticky; top: 0; z-index: 50;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    header h1 {
+      font-size: 1.2rem; font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+    .header-nav {
+      display: flex;
+      gap: 1.5rem;
+      margin-left: 2rem;
+      margin-right: auto;
+    }
+    .header-nav a {
+      color: var(--text-3);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: color 0.15s, border-bottom-color 0.15s;
+      padding: 0.25rem 0;
+      border-bottom: 2px solid transparent;
+    }
+    .header-nav a:hover {
+      color: var(--text);
+    }
+    .header-nav a.active {
+      color: var(--text);
+      border-bottom-color: var(--blue);
+      font-weight: 600;
+    }
+
+    /* ── Layout ── */
+    .app { display: flex; height: calc(100vh - 57px); overflow: hidden; }
+    @media (max-width: 1100px) {
+      .app { flex-direction: column; height: auto; overflow: visible; }
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 380px; flex-shrink: 0;
+      padding: 1.25rem;
+      background: var(--surface-1);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-right: 0.5px solid var(--border);
+      overflow-y: auto;
+      display: flex; flex-direction: column; gap: 1.25rem;
+    }
+    @media (max-width: 1100px) {
+      .sidebar { width: 100%; border-right: none; border-bottom: 0.5px solid var(--border); overflow-y: visible; }
+    }
+
+    .card {
+      background: var(--surface-2);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+    }
+    .card h2 {
+      font-size: 0.8rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.05em; color: var(--text-3); margin-bottom: 0.9rem;
+    }
+
+    .row { display: flex; gap: 0.75rem; }
+    .field { flex: 1; display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 0.75rem; }
+    .field:last-child { margin-bottom: 0; }
+    .field label {
+      font-size: 0.75rem; font-weight: 500; color: var(--text-3);
+      display: flex; align-items: center; gap: 0.35rem;
+    }
+    .tip {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 14px; height: 14px; border-radius: 50%;
+      background: var(--surface-3); font-size: 8px; cursor: help;
+      position: relative; border: 0.5px solid var(--border);
+    }
+    .tip::after {
+      content: attr(data-t); position: absolute; bottom: calc(100% + 6px);
+      left: 50%; transform: translateX(-50%);
+      background: var(--surface-3); border: 0.5px solid var(--border); color: var(--text);
+      padding: 0.45rem 0.6rem; border-radius: 8px; font-size: 0.7rem;
+      width: 200px; white-space: normal; line-height: 1.4;
+      opacity: 0; pointer-events: none; transition: opacity 0.15s; z-index: 99;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+    .tip:hover::after { opacity: 1; }
+
+    input[type="number"], select {
+      width: 100%;
+      background: var(--surface-3); border: 0.5px solid var(--border);
+      color: var(--text); padding: 0.5rem 0.7rem; border-radius: 8px;
+      font-size: 0.85rem; font-family: inherit; transition: all 0.15s;
+    }
+    input[type="number"]:focus, select:focus {
+      outline: none; border-color: var(--blue);
+      box-shadow: 0 0 0 3px var(--blue-glow);
+    }
+    select option { background: var(--surface-3); }
+
+    /* ── Slider ── */
+    .slider-wrap { display: flex; flex-direction: column; gap: 0.5rem; }
+    .slider-top { display: flex; justify-content: space-between; align-items: baseline; }
+    .slider-top .val { font-size: 1.1rem; font-weight: 600; color: var(--blue); }
+    input[type="range"] {
+      -webkit-appearance: none; width: 100%; height: 5px;
+      background: rgba(255,255,255,0.15); border-radius: 99px; outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%;
+      background: #FFFFFF; cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.5); border: 0.5px solid rgba(0,0,0,0.1);
+      transition: transform 0.1s;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.1); }
+    .slider-ends { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-3); }
+
+    /* ── Warning ── */
+    .warn {
+      display: none; /* JS toggles via style.display = 'flex' */
+      align-items: center; gap: 0.5rem;
+      padding: 0.6rem 0.8rem; margin-top: 0.5rem;
+      background: rgba(255,69,58,0.1); border: 0.5px solid rgba(255,69,58,0.3);
+      border-radius: 8px; font-size: 0.78rem; color: var(--rose);
+    }
+
+    /* ── File Upload ── */
+    .upload {
+      border: 1px dashed rgba(255,255,255,0.2); border-radius: 10px;
+      padding: 1.2rem; text-align: center; cursor: pointer;
+      transition: all 0.2s; position: relative; background: var(--surface-3);
+    }
+    .upload:hover { border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.05); }
+    .upload input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .upload .ico { font-size: 1.3rem; margin-bottom: 0.3rem; }
+    .upload .txt { font-size: 0.75rem; color: var(--text-3); }
+    .upload .fname { font-size: 0.8rem; color: var(--blue); margin-top: 0.4rem; word-break: break-all; }
+    .btn-rm {
+      display: none; width: 100%; margin-top: 0.6rem;
+      padding: 0.4rem; border-radius: 8px; border: 0.5px solid rgba(255,69,58,0.3);
+      background: rgba(255,69,58,0.1); color: var(--rose);
+      font-family: inherit; font-size: 0.78rem; cursor: pointer; transition: all 0.15s;
+    }
+    .btn-rm:hover { background: rgba(255,69,58,0.2); }
+
+    /* ── Main Workspace ── */
+    .workspace {
+      flex: 1; padding: 1.25rem; overflow: hidden;
+      display: flex; flex-direction: column; gap: 1.25rem;
+      background: var(--bg);
+      height: 100%;
+    }
+    @media (max-width: 1100px) {
+      .workspace { overflow: visible; height: auto; }
+    }
+
+    /* Stats Row */
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.75rem; }
+    @media (max-width: 768px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+    .stat {
+      background: var(--surface-2); border: 0.5px solid var(--border);
+      border-radius: var(--radius); padding: 0.8rem 1rem;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+    }
+    .stat .lbl { font-size: 0.7rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.04em; }
+    .stat .num { font-size: 1.3rem; font-weight: 600; margin-top: 0.15rem; letter-spacing: -0.02em; }
+    .stat.s1 .num { color: var(--text); }
+    .stat.s2 .num { color: var(--emerald); }
+    .stat.s3 .num { color: var(--amber); }
+    .stat.s-cost { display: none; } /* Hidden by default until inputs are provided */
+
+    /* Order Summary Bar */
+    .order-summary {
+      display: none; /* JS toggles */
+      background: rgba(10, 132, 255, 0.08);
+      border: 0.5px solid rgba(10, 132, 255, 0.3);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .order-summary .os-main { display: flex; flex-direction: column; gap: 0.2rem; }
+    .order-summary .os-title { font-size: 0.75rem; font-weight: 600; color: var(--blue); text-transform: uppercase; letter-spacing: 0.05em; }
+    .order-summary .os-primary { font-size: 1.1rem; color: var(--text); font-weight: 500; }
+    .order-summary .os-primary strong { font-weight: 700; }
+    .order-summary .os-details { font-size: 0.8rem; color: var(--text-3); }
+    .order-summary .os-waste { font-size: 0.8rem; color: var(--amber); }
+
+    /* Collapsible details cards */
+    details.details-card {
+      transition: all 0.2s ease;
+    }
+    details.details-card summary {
+      font-size: 0.8rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.05em; color: var(--text-3); cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+      list-style: none; outline: none;
+      user-select: none;
+    }
+    details.details-card summary::-webkit-details-marker {
+      display: none;
+    }
+    details.details-card summary::after {
+      content: '▾';
+      font-size: 0.9rem;
+      color: var(--text-3);
+      transition: transform 0.2s ease;
+    }
+    details.details-card[open] summary::after {
+      transform: rotate(180deg);
+      color: var(--blue);
+    }
+    details.details-card .details-content {
+      margin-top: 0.9rem;
+      animation: sweep 0.2s ease-out;
+    }
+    @keyframes sweep {
+      0% { opacity: 0; transform: translateY(-4px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Candidates */
+    .cands {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .cand {
+      background: var(--surface-3);
+      border: 0.5px solid var(--border);
+      border-radius: 8px;
+      padding: 0.6rem 0.8rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .cand:hover {
+      border-color: var(--border-hover);
+      background: rgba(255,255,255,0.03);
+    }
+    .cand.on {
+      border-color: var(--blue);
+      background: rgba(10, 132, 255, 0.08);
+      box-shadow: 0 0 0 1px var(--blue);
+    }
+    .cand .c-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+    }
+    .cand .c-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.1rem;
+    }
+    .cand .c-size {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .cand .c-grid {
+      font-size: 0.7rem;
+      color: var(--text-3);
+    }
+    .cand .c-count {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--emerald);
+    }
+    .cand .c-eff {
+      font-size: 0.7rem;
+      color: var(--text-3);
+    }
+
+    /* Panels */
+    .panels { display: grid; grid-template-columns: 1.5fr 1fr; gap: 1.25rem; flex: 1; min-height: 0; }
+    @media (max-width: 1200px) { .panels { grid-template-columns: 1fr; } }
+    .panel {
+      background: var(--surface-2); border: 0.5px solid var(--border);
+      border-radius: 16px; display: flex; flex-direction: column;
+      overflow: hidden; min-height: 0;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+    }
+    .panel-top {
+      padding: 0.8rem 1.2rem; border-bottom: 0.5px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      background: rgba(255,255,255,0.02);
+    }
+    .panel-top h3 {
+      font-size: 0.85rem; font-weight: 600; color: var(--text);
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .panel-top h3::before {
+      content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--text-3);
+    }
+    .panel-top.alt h3::before { background: var(--blue); }
+    .panel-top .sub { font-size: 0.72rem; color: var(--text-3); }
+    .panel-canvas {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      background: var(--bg); padding: 1rem; overflow: hidden;
+    }
+
+    /* Efficiency help */
+    .eff-help {
+      font-size: 0.72rem; color: var(--text-3); padding: 0.5rem 0 0;
+      border-top: 0.5px solid var(--border); margin-top: 0.5rem;
+    }
+
+    /* Presets & Chips */
+    .presets { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .chip {
+      background: var(--surface-3); border: 0.5px solid var(--border);
+      color: var(--text-2); padding: 0.25rem 0.55rem; border-radius: 6px;
+      font-size: 0.7rem; font-family: inherit; cursor: pointer; transition: all 0.15s;
+    }
+    .chip:hover { background: var(--blue); color: #FFFFFF; border-color: var(--blue); }
+
+    /* Dragover Upload */
+    .upload.dragover { border-color: var(--blue); background: rgba(10, 132, 255, 0.1); }
+
+    /* Removed active candidate badge in favor of clean blue border styling */
+    .cand:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+    /* Reset button */
+    .btn-reset {
+      background: transparent; border: 0.5px solid var(--border);
+      color: var(--text-3); padding: 0.35rem 0.75rem; border-radius: 6px;
+      font-size: 0.75rem; font-family: inherit; cursor: pointer;
+      transition: all 0.15s; margin-left: auto;
+    }
+    .btn-reset:hover { background: var(--surface-3); color: var(--text); border-color: var(--border-hover); }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+
+    /* ── Mobile Optimization ── */
+    @media (max-width: 1200px) {
+      .panel-canvas { min-height: 450px; }
+    }
+    @media (max-width: 768px) {
+      .panel-canvas { min-height: 300px; }
+      header { flex-wrap: wrap; padding: 1rem; gap: 0.5rem; }
+      .header-nav { margin-left: 0; margin-top: 0.5rem; width: 100%; order: 3; justify-content: flex-start; gap: 1rem; }
+      header h1 { font-size: 1.1rem; }
+      .btn-reset { padding: 0.35rem 0.6rem; font-size: 0.7rem; }
+      .sidebar { padding: 1rem; gap: 1rem; }
+      .workspace { padding: 1rem; gap: 1rem; }
+      .row { flex-direction: column; gap: 0.5rem; }
+      .card { padding: 0.9rem; }
+      /* Hide Cover Mockup on very small screens to save space */
+      .panel:nth-child(2) { display: none; }
+      .upload .txt::before { content: "Tap to upload artwork"; font-size: 0.8rem; }
+      .upload .txt { font-size: 0; }
+    }
+    
+    /* ── Docs & Footer ── */
+    .docs-section {
+      max-width: 1100px;
+      margin: 3rem auto;
+      padding: 0 1.5rem;
+    }
+    .docs-section h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+    .docs-section h3 {
+      font-size: 1.1rem;
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+      color: var(--text-2);
+    }
+    .docs-section p, .docs-section li {
+      color: var(--text-3);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+    .docs-section ul {
+      padding-left: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .docs-section strong {
+      color: var(--text);
+    }
+    .docs-section a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+    .docs-section a:hover {
+      text-decoration: underline;
+    }
+    footer {
+      border-top: 0.5px solid var(--border);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      margin-top: 4rem;
+      background: var(--surface-2);
+    }
+    footer nav {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    footer a {
+      color: var(--text-3);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    footer a:hover {
+      color: var(--text);
+    }
+    footer p {
+      color: var(--text-3);
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+<!-- SEO Fallback for Crawlers -->
+<noscript>
+  <div style="padding: 2rem; background: #fff; color: #000;">
+    <h1>Sticker Sheet Imposition Yield Guide</h1>
+    <p>This table shows mathematical maximum yields for standard sticker sizes printed on 13x19" sheets (with 0.0625" bleed, 0.125" gap, and 0.2" margin).</p>
+    
+    <table border="1" style="border-collapse: collapse; width: 100%; max-width: 600px; text-align: left;">
+      <thead>
+        <tr>
+          <th style="padding: 8px;">Sticker Size</th>
+          <th style="padding: 8px;">Yield per Sheet</th>
+          <th style="padding: 8px;">Efficiency</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td style="padding: 8px;">2" × 2"</td><td style="padding: 8px;">48 up</td><td style="padding: 8px;">77.7%</td></tr>
+        <tr><td style="padding: 8px;">3" × 3"</td><td style="padding: 8px;">24 up</td><td style="padding: 8px;">87.4%</td></tr>
+        <tr><td style="padding: 8px;">4" × 3"</td><td style="padding: 8px;">18 up</td><td style="padding: 8px;">87.4%</td></tr>
+        <tr><td style="padding: 8px;">4" × 4"</td><td style="padding: 8px;">12 up</td><td style="padding: 8px;">77.7%</td></tr>
+        <tr><td style="padding: 8px;">5" × 3"</td><td style="padding: 8px;">12 up</td><td style="padding: 8px;">72.9%</td></tr>
+      </tbody>
+    </table>
+
+    <h2>How is efficiency calculated?</h2>
+    <p>Efficiency is calculated as the pure trim area of the stickers (width × height) multiplied by the total number of stickers, divided by the total area of the sheet. Bleed area is considered waste.</p>
+    
+    <h2>Print Constraints</h2>
+    <ul>
+      <li><strong>Bleed:</strong> Extra artwork beyond the cut line (usually 0.0625" or 0.125").</li>
+      <li><strong>Gap / Gutter:</strong> Physical white space between cut lines.</li>
+      <li><strong>Margin:</strong> Unprintable white border on the edge of the physical sheet.</li>
+      <li><strong>Gripper Edge:</strong> The mechanical grab zone for commercial presses (leave at 0 for home cutting machines like Cricut).</li>
+    </ul>
+
+    <p><em>To use our interactive calculator that computes custom sizes instantly, please enable JavaScript.</em></p>
+</noscript>
+
+<header>
+  <h1>📐 Sticker Imposition</h1>
+  <nav class="header-nav">
+    <a href="./index.html" class="active">Calculator</a>
+    <a href="./blog/index.html">Guides & Blog</a>
+  </nav>
+    <button type="button" class="btn-reset" id="btn-reset" style="margin-right: 1rem;">Reset Defaults</button>
+    <button type="button" class="btn-reset" id="btn-clear-data" style="background: rgba(255,69,58,0.1); color: #FF453A;">Clear Saved Data</button>
+  </header>
+
+<div class="app">
+  <!-- ─── Sidebar ─── -->
+  <aside class="sidebar">
+
+    <!-- Slider Control -->
+    <div class="card" style="border-color: rgba(10,132,255,0.25);">
+      <h2>Size & Yield Control</h2>
+      <div class="slider-wrap">
+        <div class="slider-top">
+          <label for="scale-slider" style="font-size:0.8rem; font-weight:600; color:var(--text);">Sticker Scale</label>
+          <span class="val" id="slider-val">100%</span>
+        </div>
+        <input type="range" id="scale-slider" min="10" max="100" value="100" step="1">
+        <div class="slider-ends">
+          <span>Smaller sticker → more per sheet</span>
+          <span>Full cover size</span>
+        </div>
+      </div>
+      <div class="field" style="margin-top:0.9rem; margin-bottom:0;">
+        <label for="scale-mode">Scale Mode</label>
+        <select id="scale-mode">
+          <option value="aspect">Scale Both (Keep Aspect Ratio)</option>
+          <option value="lock-w">Lock Width — Vary Height</option>
+          <option value="lock-h">Lock Height — Vary Width</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Custom Override -->
+    <div class="card">
+      <h2>Custom Sticker Size (in)</h2>
+      <p style="font-size:0.72rem; color:var(--text-3); margin-bottom:0.7rem;">
+        Enter width only → height auto-calculated. Enter both → full override.
+      </p>
+      <div class="row">
+        <div class="field">
+          <label for="cust-w">Width</label>
+          <input type="number" id="cust-w" step="0.1" min="0.5" placeholder="Auto">
+        </div>
+        <div class="field">
+          <label for="cust-h">Height</label>
+          <input type="number" id="cust-h" step="0.1" min="0.5" placeholder="Auto">
+        </div>
+      </div>
+      <div class="warn" id="warn">⚠️ Sticker exceeds Cover in both orientations!</div>
+    </div>
+
+
+    <!-- Suggested Sizes (Collapsible Accordion) -->
+    <details class="card details-card" id="suggested-card">
+      <summary>Suggested Sizes</summary>
+      <div class="details-content">
+        <div class="cands" id="cands"></div>
+        <p class="eff-help" style="margin-top:0.6rem; border-top: none; padding-top: 0; line-height: 1.35;">
+          Click a layout to apply it. <strong>Efficiency %</strong> is the usable sticker area on the sheet.
+        </p>
+      </div>
+    </details>
+
+    <!-- Sheet & Cover -->
+    <details class="card details-card" open>
+      <summary>Sheet & Cover Size (in)</summary>
+      <div class="details-content">
+        <!-- Sheet Size Selection -->
+        <div class="field" style="margin-bottom: 0.75rem;">
+          <label for="sheet-preset">Sheet Size</label>
+          <select id="sheet-preset">
+            <option value="13,19" selected>13 × 19 (Super B)</option>
+            <option value="12.6,17.7">12.6 × 17.7 (SRA3)</option>
+            <option value="8.8,12.6">8.8 × 12.6 (SRA4)</option>
+            <option value="19.7,27.8">19.7 × 27.8 (B2)</option>
+            <option value="12,18">12 × 18 (Arch B)</option>
+            <option value="8.5,11">8.5 × 11 (Letter)</option>
+            <option value="8.27,11.69">8.27 × 11.69 (A4)</option>
+            <option value="11.69,16.54">11.69 × 16.54 (A3)</option>
+            <option value="custom">Custom Size...</option>
+          </select>
+        </div>
+        <div class="row" id="sheet-custom-row" style="display: none; margin-bottom: 1.25rem;">
+          <div class="field"><label for="sw">Sheet W</label><input type="number" id="sw" value="13" step="0.5" min="1"></div>
+          <div class="field"><label for="sh">Sheet H</label><input type="number" id="sh" value="19" step="0.5" min="1"></div>
+        </div>
+
+        <!-- Cover/Sticker Size Selection -->
+        <div class="field" style="margin-bottom: 0.75rem;">
+          <label for="cover-preset">Target Sticker Size (Max Area)</label>
+          <select id="cover-preset">
+            <option value="10.5,9" selected>10.5 × 9 (Custom/Package)</option>
+            <option value="2,2">2 × 2</option>
+            <option value="3,3">3 × 3</option>
+            <option value="4,4">4 × 4</option>
+            <option value="4,6">4 × 6</option>
+            <option value="5,7">5 × 7</option>
+            <option value="custom">Custom Size...</option>
+          </select>
+        </div>
+        <div class="row" id="cover-custom-row" style="display: none;">
+          <div class="field"><label for="cw">Width</label><input type="number" id="cw" value="10.5" step="0.5" min="0.5"></div>
+          <div class="field"><label for="ch">Height</label><input type="number" id="ch" value="9" step="0.5" min="0.5"></div>
+        </div>
+      </div>
+    </details>
+
+    <!-- Print Constraints -->
+    <details class="card details-card">
+      <summary>Print Constraints (in)</summary>
+      <div class="details-content">
+        <div class="row">
+          <div class="field">
+            <label for="bleed">Bleed <span class="tip" tabindex="0" role="tooltip" data-t="Extra area printed beyond the cut line to avoid white edges if cutting is slightly off. Added on every side of each sticker.">i</span></label>
+            <input type="number" id="bleed" value="0.0625" step="0.005" min="0">
+          </div>
+          <div class="field">
+            <label for="gap">Gap <span class="tip" tabindex="0" role="tooltip" data-t="Blank space between adjacent stickers so the cutter blade has a safe path.">i</span></label>
+            <input type="number" id="gap" value="0.125" step="0.005" min="0">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="margin">Sheet Margin <span class="tip" tabindex="0" role="tooltip" data-t="Non-printable border around the sheet edge. Most printers can't print here and cutters need edge clearance.">i</span></label>
+            <input type="number" id="margin" value="0.2" step="0.01" min="0">
+          </div>
+          <div class="field">
+            <label for="gripper" title="Only relevant for commercial press sheets. Home cutting machines have no gripper edge, leave at 0.">Gripper Edge (in)</label>
+            <input type="number" id="gripper" value="0.5" step="0.01" min="0">
+          </div>
+        </div>
+        <p class="eff-help" style="margin-top: 0.5rem; border-top: none; padding-top: 0;">💡 Confirm these values with your print shop — they vary by printer.</p>
+      </div>
+    </details>
+
+    <!-- Image Upload -->
+    <div class="card">
+      <h2>Artwork Preview</h2>
+      <div class="upload" id="upload-zone">
+        <div class="ico">🖼️</div>
+        <div class="txt">Click or drag to upload sticker artwork</div>
+        <div class="fname" id="fname"></div>
+        <input type="file" id="art-file" accept="image/*">
+      </div>
+      <button class="btn-rm" id="btn-rm">Remove Image</button>
+    </div>
+
+  </aside>
+
+  <!-- ─── Workspace ─── -->
+  <main class="workspace">
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat s1"><div class="lbl">Sticker Size</div><div class="num" id="st-size">—</div></div>
+      <div class="stat s2"><div class="lbl">Yield / Sheet</div><div class="num" id="st-count">—</div></div>
+      <div class="stat s3"><div class="lbl">Efficiency</div><div class="num" id="st-eff">—</div></div>
+      <div class="stat"><div class="lbl">Grid Layout</div><div class="num" id="st-grid">—</div></div>
+      <div class="stat s-cost" id="card-cost"><div class="lbl">Cost / Sticker</div><div class="num" id="st-cost">—</div></div>
+      <div class="stat s-cost" id="card-sheets"><div class="lbl">Sheets Needed</div><div class="num" id="st-sheets">—</div></div>
+    </div>
+
+    <!-- Order Planning (Phase 2) -->
+    <details class="card details-card" style="margin-top: 1rem; margin-bottom: 1.5rem; background: var(--surface-1);">
+      <summary style="font-size: 1rem; font-weight: 600; padding: 1rem;">Order Planning (Optional)</summary>
+      <div class="details-content" style="padding: 1rem; padding-top: 0;">
+        <p style="font-size:0.8rem; color:var(--text-3); margin-bottom:1rem;">
+          Enter your target quantity and optional pricing to calculate total sheets needed, total cost, and waste.
+        </p>
+        <div class="row" style="margin-bottom: 1rem;">
+          <div class="field">
+            <label for="order-qty">Target Order Quantity</label>
+            <input type="number" id="order-qty" step="1" min="1" placeholder="e.g. 500">
+          </div>
+          <div class="field">
+            <label for="sheet-price">Sheet Price (Optional)</label>
+            <input type="number" id="sheet-price" step="0.01" min="0" placeholder="e.g. 1.25">
+          </div>
+          <div class="field">
+            <label for="pack-qty">Pack Qty <span class="tip" tabindex="0" role="tooltip" data-t="If the price is for a pack of sheets, enter how many sheets are in the pack. Defaults to 1.">i</span></label>
+            <input type="number" id="pack-qty" step="1" min="1" value="1" placeholder="1">
+          </div>
+        </div>
+        
+        <!-- Order Summary -->
+        <div class="order-summary" id="order-summary" style="margin-top: 1rem;">
+          <div class="os-main">
+            <div class="os-title">📦 Order Summary</div>
+            <div class="os-primary" id="os-primary">—</div>
+          </div>
+          <div class="os-main" style="align-items: flex-end; text-align: right;">
+            <div class="os-waste" id="os-waste">—</div>
+            <div class="os-details" id="os-details">—</div>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <!-- Error Banner -->
+    <div id="main-error" class="warn" style="display: none; margin-bottom: 1.5rem; padding: 1rem; border: 1px solid #FF453A; border-radius: 8px; background: rgba(255,69,58,0.05); color: #FF453A;">
+      ⚠️ <strong id="main-error-msg">Sheet size is too small for these margins!</strong>
+    </div>
+
+    <!-- Previews -->
+    <div class="panels" id="preview-panels">
+      <div class="panel">
+        <div class="panel-top">
+          <h3>Sheet Layout</h3>
+          <span class="sub">To-scale · Margin (red) · Bleed (blue dashed) · Trim (solid)</span>
+        </div>
+        <div class="panel-canvas" id="pc-sheet"><canvas id="cv-sheet"></canvas></div>
+        <div style="margin-top: 0.75rem; text-align: center; display: flex; gap: 0.5rem; justify-content: center;">
+          <button type="button" class="btn-reset" id="btn-export-pdf" style="margin: 0; background: var(--blue); color: #fff; border: none; padding: 0.5rem 1rem;">⬇ Export PDF</button>
+          <button type="button" class="btn-reset" id="btn-export-png" style="margin: 0; background: var(--surface-3); color: var(--text); border: 1px solid var(--border); padding: 0.5rem 1rem;">⬇ Export PNG</button>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-top alt">
+          <h3>Cover Mockup</h3>
+          <span class="sub">Sticker on cover, to scale</span>
+        </div>
+        <div class="panel-canvas" id="pc-cover"><canvas id="cv-cover"></canvas></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<section class="docs-section">
+  <h2>How this Calculator Works</h2>
+  <p>This tool helps you figure out exactly how many stickers or labels you can fit on a single printed sheet, taking into account the physical constraints of commercial or home printing.</p>
+
+  <h3>What is Print Bleed?</h3>
+  <p>Bleed is the extra artwork printed beyond your final cut line. Because cutting machines (like a guillotine cutter or a Cricut) are rarely 100% perfect, having a little extra color ensures you don't end up with a tiny white sliver on the edge of your sticker. A standard commercial bleed is 0.0625" or 0.125" per side.</p>
+
+  <h3>What is the Gap (or Gutter)?</h3>
+  <p>The gap is the physical white space left between the cut lines of adjacent stickers. The cutting blade needs a safe path to travel through without ruining the sticker next to it. Our calculator ensures that the bleeds from adjacent stickers safely overlap inside this gap without wasting extra space.</p>
+
+  <h3>What is the Gripper Edge?</h3>
+  <p>Commercial sheet-fed printing presses use mechanical "fingers" to grab the paper and pull it through the machine. These fingers cover about 0.5" of the leading edge of the paper, meaning the printer cannot print there. <strong>If you are using a home cutting machine (like a Silhouette or Cricut) or a roll-fed printer, you should set this to 0.</strong></p>
+
+  <h3>How is Efficiency Calculated?</h3>
+  <p>Efficiency tells you how much of the paper you are actually using. It is calculated by taking the pure trim area of the stickers (width × height) multiplied by the total number of stickers, divided by the total area of the sheet. The bleed area and margins are considered waste.</p>
+</section>
+<script>
+const $ = id => document.getElementById(id);
+const D = {
+  sheetPreset: $('sheet-preset'), sheetCustomRow: $('sheet-custom-row'),
+  coverPreset: $('cover-preset'), coverCustomRow: $('cover-custom-row'),
+  sw: $('sw'), sh: $('sh'), cw: $('cw'), ch: $('ch'),
+  bleed: $('bleed'), gap: $('gap'), margin: $('margin'), gripper: $('gripper'),
+  custW: $('cust-w'), custH: $('cust-h'), warn: $('warn'),
+  slider: $('scale-slider'), sliderVal: $('slider-val'), scaleMode: $('scale-mode'),
+  sheetPrice: $('sheet-price'), packQty: $('pack-qty'), orderQty: $('order-qty'),
+  artFile: $('art-file'), fname: $('fname'), btnRm: $('btn-rm'), uploadZone: $('upload-zone'),
+  cands: $('cands'), btnReset: $('btn-reset'), btnClearData: $('btn-clear-data'),
+  stSize: $('st-size'), stCount: $('st-count'), stEff: $('st-eff'), stGrid: $('st-grid'),
+  cardCost: $('card-cost'), cardSheets: $('card-sheets'), stCost: $('st-cost'), stSheets: $('st-sheets'),
+  orderSummary: $('order-summary'), osPrimary: $('os-primary'), osWaste: $('os-waste'), osDetails: $('os-details'),
+  cvSheet: $('cv-sheet'), cvCover: $('cv-cover'),
+  pcSheet: $('pc-sheet'), pcCover: $('pc-cover'),
+};
+
+let STATE = {
+  img: null, candidates: [], activeLayout: null, activeW: 0, activeH: 0,
+};
+
+function getParams() {
+  return {
+    SW: +D.sw.value || 13,
+    SH: +D.sh.value || 19,
+    CW: +D.cw.value || 10.5,
+    CH: +D.ch.value || 9,
+    bleed: +D.bleed.value || 0,
+    gap: +D.gap.value || 0,
+    margin: +D.margin.value || 0,
+    gripper: +D.gripper.value || 0,
+  };
+}
+
+function computeLayout(trimW, trimH, p) {
+  const { SW, SH, bleed, gap, margin, gripper } = p;
+  const effectiveGripper = Math.max(margin, gripper);
+  const usableW = SW - 2 * margin;
+  const usableH = SH - margin - effectiveGripper;
+
+  const effUsableW = usableW + gap - 2 * bleed;
+  const effUsableH = usableH + gap - 2 * bleed;
+
+  function gridCount(tW, tH) {
+    if (tW <= 0 || tH <= 0 || effUsableW < tW || effUsableH < tH) return { c: 0, r: 0 };
+    const c = Math.floor(effUsableW / (tW + gap));
+    const r = Math.floor(effUsableH / (tH + gap));
+    return { c, r };
+  }
+
+  function buildItems(c, r, tW, tH, offX, offY) {
+    const items = [];
+    for (let i = 0; i < c; i++) {
+      for (let j = 0; j < r; j++) {
+        const itemX = offX + bleed + i * (tW + gap);
+        const itemY = offY + bleed + j * (tH + gap);
+        items.push({ x: itemX, y: itemY, w: tW, h: tH });
+      }
+    }
+    return items;
+  }
+
+  function gridCount_strip(availW, availH, tW, tH) {
+    const effW = availW + gap - 2 * bleed;
+    const effH = availH + gap - 2 * bleed;
+    if (tW <= 0 || tH <= 0 || effW < tW || effH < tH) return { c: 0, r: 0 };
+    const c = Math.floor(effW / (tW + gap));
+    const r = Math.floor(effH / (tH + gap));
+    return { c, r };
+  }
+
+  const gA = gridCount(trimW, trimH);
+  let itemsA = buildItems(gA.c, gA.r, trimW, trimH, margin, margin);
+
+  const usedWa = gA.c > 0 ? gA.c * (trimW + gap) - gap + 2 * bleed : 0;
+  const leftWa = usableW - usedWa;
+  if (leftWa > 0) {
+    const strip = gridCount_strip(leftWa - gap, usableH, trimH, trimW);
+    if (strip.c > 0 && strip.r > 0) {
+      const extra = buildItems(strip.c, strip.r, trimH, trimW, margin + usedWa + gap, margin);
+      itemsA = itemsA.concat(extra);
+    }
+  }
+  const usedHa = gA.r > 0 ? gA.r * (trimH + gap) - gap + 2 * bleed : 0;
+  const leftHa = usableH - usedHa;
+  if (leftHa > 0) {
+    const strip = gridCount_strip(usableW, leftHa - gap, trimH, trimW);
+    if (strip.c > 0 && strip.r > 0) {
+      const extraBot = buildItems(strip.c, strip.r, trimH, trimW, margin, margin + usedHa + gap);
+      if (usedWa >= usableW - gap) {
+        itemsA = itemsA.concat(extraBot);
+      }
+    }
+  }
+
+  const gB = gridCount(trimH, trimW);
+  let itemsB = buildItems(gB.c, gB.r, trimH, trimW, margin, margin);
+
+  const usedWb = gB.c > 0 ? gB.c * (trimH + gap) - gap + 2 * bleed : 0;
+  const leftWb = usableW - usedWb;
+  if (leftWb > 0) {
+    const strip = gridCount_strip(leftWb - gap, usableH, trimW, trimH);
+    if (strip.c > 0 && strip.r > 0) {
+      const extra = buildItems(strip.c, strip.r, trimW, trimH, margin + usedWb + gap, margin);
+      itemsB = itemsB.concat(extra);
+    }
+  }
+  const usedHb = gB.r > 0 ? gB.r * (trimW + gap) - gap + 2 * bleed : 0;
+  const leftHb = usableH - usedHb;
+  if (leftHb > 0) {
+    const strip = gridCount_strip(usableW, leftHb - gap, trimW, trimH);
+    if (strip.c > 0 && strip.r > 0) {
+      const extraBot = buildItems(strip.c, strip.r, trimW, trimH, margin, margin + usedHb + gap);
+      if (usedWb >= usableW - gap) {
+        itemsB = itemsB.concat(extraBot);
+      }
+    }
+  }
+
+  const countA = itemsA.length;
+  const countB = itemsB.length;
+  const sheetArea = SW * SH;
+
+  if (countA >= countB) {
+    return {
+      count: countA,
+      eff: sheetArea > 0 ? (countA * trimW * trimH) / sheetArea * 100 : 0,
+      cols: gA.c, rows: gA.r,
+      items: itemsA,
+      orientation: trimW >= trimH ? 'Landscape' : 'Portrait',
+    };
+  } else {
+    return {
+      count: countB,
+      eff: sheetArea > 0 ? (countB * trimW * trimH) / sheetArea * 100 : 0,
+      cols: gB.c, rows: gB.r,
+      items: itemsB,
+      orientation: trimH >= trimW ? 'Landscape' : 'Portrait',
+    };
+  }
+}
+
+function gridCount_strip(availW, availH, fpW, fpH) {
+  if (fpW <= 0 || fpH <= 0 || availW <= 0 || availH <= 0) return { c: 0, r: 0 };
+  const gap = +D.gap.value || 0;
+  const c = Math.floor((availW + gap) / (fpW + gap));
+  const r = Math.floor((availH + gap) / (fpH + gap));
+  return { c, r };
+}
+
+// ════════════════════════════════════════════════════════════════
+// Candidate generation
+// ════════════════════════════════════════════════════════════════
+function generateCandidates() {
+  const p = getParams();
+  const { CW, CH, SW, SH, bleed, gap, margin, gripper } = p;
+  const effectiveGripper = Math.max(margin, gripper);
+  const usableW = SW - 2 * margin;
+  const usableH = SH - margin - effectiveGripper;
+
+  const results = new Map();
+  // We floor to the nearest 1/8th of an inch (0.125) so the user gets practical, standard dimensions
+  // Rounding DOWN ensures it will always perfectly fit within the mathematical grid without overflowing.
+  const round2 = v => Math.floor(v * 8) / 8;
+
+  function trySize(w, h) {
+    if (w < 0.5 || h < 0.5) return;
+    w = round2(Math.min(w, CW));
+    h = round2(Math.min(h, CH));
+    const key = `${w}x${h}`;
+    if (results.has(key)) return;
+    const layout = computeLayout(w, h, p);
+    if (layout.count > 0) {
+      results.set(key, { w, h, ...layout });
+    }
+  }
+
+  // 1. Always check exact cover size
+  trySize(CW, CH);
+
+  const minFp = 0.5 + 2 * bleed;
+  if (minFp + gap > 0 && usableW > 0 && usableH > 0) {
+    const maxC = Math.floor((usableW + gap) / (minFp + gap));
+    const maxR = Math.floor((usableH + gap) / (minFp + gap));
+
+    // 2. Mathematical limits: Find dimensions that exactly divide W and H
+    // Formula: C * (trimW + gap) = usableW + gap - 2 * bleed
+    // So trimW = (usableW + gap - 2 * bleed) / C - gap
+    for (let c = 1; c <= maxC; c++) {
+      for (let r = 1; r <= maxR; r++) {
+        const trimW = (usableW + gap - 2 * bleed) / c - gap;
+        const trimH = (usableH + gap - 2 * bleed) / r - gap;
+        trySize(trimW, trimH);
+        trySize(trimH, trimW);
+      }
+    }
+
+    // 3. One side perfectly divided, the other side constrained to Cover Width/Height
+    for (let r = 1; r <= maxR; r++) {
+      const trimH = (usableH + gap - 2 * bleed) / r - gap;
+      trySize(CW, trimH);
+      trySize(trimH, CW);
+      trySize(CH, trimH);
+      trySize(trimH, CH);
+    }
+
+    for (let c = 1; c <= maxC; c++) {
+      const trimW = (usableW + gap - 2 * bleed) / c - gap;
+      trySize(CW, trimW);
+      trySize(trimW, CW);
+      trySize(CH, trimW);
+      trySize(trimW, CH);
+    }
+  }
+
+  let all = Array.from(results.values());
+  // Sort by count descending, then area descending
+  all.sort((a, b) => {
+    if (a.count !== b.count) return a.count - b.count;
+    return (b.w * b.h) - (a.w * a.h);
+  });
+
+  // Keep only the largest area for any given yield count
+  const byCount = new Map();
+  for (const r of all) {
+    if (!byCount.has(r.count)) {
+      byCount.set(r.count, r);
+    } else {
+      const existing = byCount.get(r.count);
+      if (r.w * r.h > existing.w * existing.h) {
+        byCount.set(r.count, r);
+      }
+    }
+  }
+
+  let picks = Array.from(byCount.values());
+  picks.sort((a, b) => a.count - b.count);
+
+  // If we have too many candidates, pick a spread of ~6 options
+  if (picks.length > 6) {
+    const selected = [picks[0]];
+    const last = picks[picks.length - 1];
+    const step = (picks.length - 1) / 5;
+    for (let i = 1; i < 5; i++) {
+      selected.push(picks[Math.round(i * step)]);
+    }
+    selected.push(last);
+    const seen = new Set();
+    picks = selected.filter(p => {
+      const k = p.count;
+      if (seen.has(k)) return false;
+      seen.add(k);
+      return true;
+    });
+  }
+
+  STATE.candidates = picks;
+  return picks;
+}
+
+// ════════════════════════════════════════════════════════════════
+// Determine active sticker size & layout (Unified Custom & Slider)
+// ════════════════════════════════════════════════════════════════
+function resolveActive() {
+  const p = getParams();
+  const custW = D.custW.value !== '' ? +D.custW.value : null;
+  const custH = D.custH.value !== '' ? +D.custH.value : null;
+
+  let baseW = p.CW;
+  let baseH = p.CH;
+  const coverAR = p.CW / p.CH;
+
+  if (custW && custH) {
+    baseW = custW;
+    baseH = custH;
+    D.custW.placeholder = 'Auto';
+    D.custH.placeholder = 'Auto';
+  } else if (custW && !custH) {
+    baseW = custW;
+    let autoH = Math.round((custW / coverAR) * 10) / 10;
+    if (autoH < 0.5) autoH = 0.5;
+    baseH = autoH;
+    D.custW.placeholder = 'Auto';
+    D.custH.placeholder = `Auto (${autoH}")`;
+  } else if (!custW && custH) {
+    baseH = custH;
+    let autoW = Math.round((custH * coverAR) * 10) / 10;
+    if (autoW < 0.5) autoW = 0.5;
+    baseW = autoW;
+    D.custW.placeholder = `Auto (${autoW}")`;
+    D.custH.placeholder = 'Auto';
+  } else {
+    D.custW.placeholder = 'Auto';
+    D.custH.placeholder = 'Auto';
+  }
+
+  const scale = +D.slider.value / 100;
+  const mode = D.scaleMode.value;
+
+  let finalW, finalH;
+  if (mode === 'aspect') {
+    finalW = baseW * scale;
+    finalH = baseH * scale;
+  } else if (mode === 'lock-w') {
+    finalW = baseW;
+    finalH = baseH * scale;
+  } else if (mode === 'lock-h') {
+    finalW = baseW * scale;
+    finalH = baseH;
+  }
+  
+  finalW = Math.round(finalW * 100) / 100;
+  finalH = Math.round(finalH * 100) / 100;
+
+  // Warning logic
+  if (finalW > p.SW || finalH > p.SH) {
+    D.warn.textContent = '⚠️ Sticker exceeds Sheet dimensions!';
+    D.warn.style.display = 'flex';
+  } else {
+    const fitsCover = (finalW <= p.CW && finalH <= p.CH) || (finalW <= p.CH && finalH <= p.CW);
+    if (!fitsCover) {
+      D.warn.textContent = '⚠️ Sticker exceeds Cover in both orientations!';
+      D.warn.style.display = 'flex';
+    } else {
+      D.warn.style.display = 'none';
+    }
+  }
+
+  STATE.activeW = finalW;
+  STATE.activeH = finalH;
+  STATE.activeLayout = computeLayout(finalW, finalH, p);
+}
+
+// ════════════════════════════════════════════════════════════════
+// Update everything
+// ════════════════════════════════════════════════════════════════
+function updateAll() {
+  const p = getParams();
+  const errorEl = $('main-error');
+  const errorMsg = $('main-error-msg');
+  const panels = $('preview-panels');
+
+  function showError(msg) {
+    errorMsg.textContent = msg;
+    errorEl.style.display = 'block';
+    panels.style.display = 'none';
+    STATE.activeLayout = null;
+    updateStats();
+    updateCostStats();
+    saveToLocalStorage();
+  }
+
+  if (p.SW <= 0 || p.SH <= 0 || isNaN(p.SW) || isNaN(p.SH)) {
+    return showError("Please enter valid numeric sheet dimensions greater than 0.");
+  }
+  if (p.CW <= 0 || p.CH <= 0 || isNaN(p.CW) || isNaN(p.CH)) {
+    return showError("Please enter valid numeric cover dimensions greater than 0.");
+  }
+  
+  const effectiveGripper = Math.max(p.margin, p.gripper);
+  if (p.SW - 2 * p.margin <= 0 || p.SH - p.margin - effectiveGripper <= 0) {
+    return showError("The margins and gripper edge overlap, leaving 0 printable area on this sheet size.");
+  }
+  
+  if (p.bleed < 0 || p.gap < 0 || p.margin < 0 || p.gripper < 0) {
+    return showError("Constraints (bleed, gap, margin) cannot be negative numbers.");
+  }
+
+  errorEl.style.display = 'none';
+  panels.style.display = 'grid';
+
+  generateCandidates();
+  resolveActive();
+  renderCandidates();
+  updateStats();
+  updateCostStats();
+  drawSheet();
+  drawCover();
+  saveToLocalStorage();
+}
+
+function saveToLocalStorage() {
+  const state = {
+    sw: D.sw.value, sh: D.sh.value, cw: D.cw.value, ch: D.ch.value,
+    sheetPreset: D.sheetPreset.value, coverPreset: D.coverPreset.value,
+    bleed: D.bleed.value, gap: D.gap.value, margin: D.margin.value, gripper: D.gripper.value
+  };
+  localStorage.setItem('stickerCalcState', JSON.stringify(state));
+
+  // Sync with URL state
+  const params = new URLSearchParams();
+  for (const [k, v] of Object.entries(state)) {
+    if (v) params.set(k, v);
+  }
+  history.replaceState(null, '', '?' + params.toString());
+}
+
+function loadFromLocalStorage() {
+  let state = {};
+  
+  // URL params take precedence
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.toString().length > 0) {
+    for (const [k, v] of urlParams.entries()) {
+      state[k] = v;
+    }
+  } else {
+    try {
+      const saved = localStorage.getItem('stickerCalcState');
+      if (saved) state = JSON.parse(saved);
+    } catch(e) {}
+  }
+
+  if (state.sw) D.sw.value = state.sw;
+  if (state.sh) D.sh.value = state.sh;
+  if (state.cw) D.cw.value = state.cw;
+  if (state.ch) D.ch.value = state.ch;
+  if (state.sheetPreset) D.sheetPreset.value = state.sheetPreset;
+  if (state.coverPreset) D.coverPreset.value = state.coverPreset;
+  if (state.bleed) D.bleed.value = state.bleed;
+  if (state.gap) D.gap.value = state.gap;
+  if (state.margin) D.margin.value = state.margin;
+  if (state.gripper !== undefined) D.gripper.value = state.gripper;
+
+  syncPresetsUI();
+}
+
+function syncPresetsUI() {
+  if (D.sheetPreset.value === 'custom') {
+    D.sheetCustomRow.style.display = 'flex';
+  } else {
+    D.sheetCustomRow.style.display = 'none';
+  }
+  if (D.coverPreset.value === 'custom') {
+    D.coverCustomRow.style.display = 'flex';
+  } else {
+    D.coverCustomRow.style.display = 'none';
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+// Render candidates
+// ════════════════════════════════════════════════════════════════
+function renderCandidates() {
+  D.cands.innerHTML = '';
+  STATE.candidates.forEach(c => {
+    const isActive = Math.abs(c.w - STATE.activeW) < 0.05 &&
+                     Math.abs(c.h - STATE.activeH) < 0.05;
+                     
+    // Calculate cost if price is provided
+    const price = parseFloat(D.sheetPrice.value);
+    const pack = parseFloat(D.packQty.value) || 1;
+    let costHtml = '';
+    if (!isNaN(price) && price > 0 && c.count > 0) {
+      const costEa = (price / pack) / c.count;
+      costHtml = `<div class="c-eff" style="color:var(--text); font-weight:600; margin-top:0.2rem;">${costEa.toFixed(3)} / ea</div>`;
+    }
+
+    const div = document.createElement('div');
+    div.className = 'cand' + (isActive ? ' on' : '');
+    div.tabIndex = 0;
+    div.role = 'button';
+    div.setAttribute('aria-label', `Select ${c.w} by ${c.h} inches layout (${c.count} up)`);
+    div.innerHTML = `
+      <div class="c-left">
+        <div class="c-size">${c.w}" × ${c.h}"</div>
+        <div class="c-grid">${c.cols}×${c.rows} grid · ${c.orientation}</div>
+      </div>
+      <div class="c-right">
+        <div class="c-count">${c.count} up</div>
+        <div class="c-eff">${c.eff.toFixed(1)}% eff.</div>
+        ${costHtml}
+      </div>
+    `;
+    const select = () => {
+      D.custW.value = c.w;
+      D.custH.value = c.h;
+      D.slider.value = 100;
+      D.sliderVal.textContent = '100%';
+      D.scaleMode.value = 'aspect';
+      updateAll();
+    };
+    div.onclick = select;
+    div.onkeydown = (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        select();
+      }
+    };
+    D.cands.appendChild(div);
+  });
+}
+
+// ════════════════════════════════════════════════════════════════
+// Update stat cards
+// ════════════════════════════════════════════════════════════════
+function updateStats() {
+  const l = STATE.activeLayout;
+  if (!l || l.count === 0) {
+    D.stSize.textContent = '—';
+    D.stCount.textContent = '—';
+    D.stEff.textContent = '—';
+    D.stGrid.textContent = '—';
+    return;
+  }
+  D.stSize.textContent = `${STATE.activeW.toFixed(1)}" × ${STATE.activeH.toFixed(1)}"`;
+  D.stCount.textContent = `${l.count} up`;
+  D.stEff.textContent = `${l.eff.toFixed(1)}%`;
+  D.stGrid.textContent = `${l.cols}×${l.rows}`;
+}
+
+// ════════════════════════════════════════════════════════════════
+// Update Cost & Order Stats
+// ════════════════════════════════════════════════════════════════
+function updateCostStats() {
+  const l = STATE.activeLayout;
+  const price = parseFloat(D.sheetPrice.value);
+  const pack = parseFloat(D.packQty.value) || 1;
+  const order = parseInt(D.orderQty.value);
+
+  // Default hide all cost elements
+  D.cardCost.style.display = 'none';
+  D.cardSheets.style.display = 'none';
+  D.orderSummary.style.display = 'none';
+
+  if (!l || l.count === 0) return;
+
+  const hasPrice = !isNaN(price) && price > 0;
+  const hasOrder = !isNaN(order) && order > 0;
+
+  let costPerSticker = 0;
+  let sheetsNeeded = 0;
+
+  if (hasPrice) {
+    const costPerSheet = price / pack;
+    costPerSticker = costPerSheet / l.count;
+    D.stCost.textContent = costPerSticker.toFixed(3);
+    D.cardCost.style.display = 'block';
+  }
+
+  if (hasOrder) {
+    sheetsNeeded = Math.ceil(order / l.count);
+    D.stSheets.textContent = sheetsNeeded.toLocaleString();
+    D.cardSheets.style.display = 'block';
+  }
+
+  if (hasPrice && hasOrder) {
+    const costPerSheet = price / pack;
+    const totalCost = sheetsNeeded * costPerSheet;
+    const totalProduced = sheetsNeeded * l.count;
+    const wasteCount = totalProduced - order;
+    const wasteCost = wasteCount * costPerSticker;
+
+    D.osPrimary.innerHTML = `<strong>${order.toLocaleString()}</strong> stickers → <strong>${sheetsNeeded.toLocaleString()}</strong> sheets → <strong>${totalCost.toFixed(2)}</strong> total`;
+    
+    if (wasteCount > 0) {
+      const wastePct = ((wasteCount / totalProduced) * 100).toFixed(1);
+      D.osWaste.textContent = `Waste: ${wasteCount.toLocaleString()} stickers (${wastePct}%) · ${wasteCost.toFixed(2)} wasted`;
+    } else {
+      D.osWaste.textContent = `Perfect fit! No wasted stickers.`;
+    }
+    
+    D.osDetails.textContent = `Breakdown: ${costPerSticker.toFixed(3)} / sticker`;
+    D.orderSummary.style.display = 'flex';
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+// Canvas drawing — Sheet Preview
+// ════════════════════════════════════════════════════════════════
+function drawSheet() {
+  const p = getParams();
+  const layout = STATE.activeLayout;
+  const canvas = D.cvSheet;
+  const container = D.pcSheet;
+
+  const dpr = window.devicePixelRatio || 1;
+  const cw = container.clientWidth;
+  const ch = container.clientHeight;
+  canvas.width = cw * dpr;
+  canvas.height = ch * dpr;
+  canvas.style.width = cw + 'px';
+  canvas.style.height = ch + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  ctx.clearRect(0, 0, cw, ch);
+  if (!layout || layout.count === 0) return;
+
+  const pad = 16;
+  const availW = cw - 2 * pad;
+  const availH = ch - 2 * pad;
+  const scale = Math.min(availW / p.SW, availH / p.SH);
+  const drawW = p.SW * scale;
+  const drawH = p.SH * scale;
+  const ox = (cw - drawW) / 2;
+  const oy = (ch - drawH) / 2;
+
+  // Sheet paper
+  ctx.fillStyle = '#FFFFFF';
+  ctx.shadowColor = 'rgba(0,0,0,0.35)';
+  ctx.shadowBlur = 10;
+  ctx.fillRect(ox, oy, drawW, drawH);
+  ctx.shadowBlur = 0;
+
+  // Waste area
+  const mPx = p.margin * scale;
+  ctx.fillStyle = 'rgba(100,116,139,0.12)';
+  ctx.fillRect(ox + mPx, oy + mPx, drawW - 2 * mPx, drawH - 2 * mPx);
+
+  // Margin boundary (red dashed)
+  ctx.strokeStyle = '#FF453A';
+  ctx.setLineDash([4, 3]);
+  ctx.lineWidth = 1;
+  ctx.strokeRect(ox + mPx, oy + mPx, drawW - 2 * mPx, drawH - 2 * mPx);
+  ctx.setLineDash([]);
+
+  // Margins
+  ctx.fillStyle = 'rgba(255,69,58,0.1)';
+  const sc = scale;
+  const w = drawW;
+  const h = drawH;
+  const effectiveGripper = Math.max(p.margin, p.gripper);
+  ctx.fillRect(ox, oy, w, p.margin * sc);
+  ctx.fillRect(ox, oy + h - effectiveGripper * sc, w, effectiveGripper * sc);
+  ctx.fillRect(ox, oy + p.margin * sc, p.margin * sc, h - (p.margin + effectiveGripper) * sc);
+  ctx.fillRect(ox + w - p.margin * sc, oy + p.margin * sc, p.margin * sc, h - (p.margin + effectiveGripper) * sc);
+  // Outline
+  ctx.strokeStyle = 'rgba(255,69,58,0.5)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 4]);
+  ctx.strokeRect(ox + p.margin * sc, oy + p.margin * sc, w - 2 * p.margin * sc, h - (p.margin + effectiveGripper) * sc);
+  ctx.setLineDash([]);
+
+  // Draw each sticker
+  layout.items.forEach(item => {
+    const x = ox + item.x * scale;
+    const y = oy + item.y * scale;
+    const w = item.w * scale;
+    const h = item.h * scale;
+    const b = p.bleed * scale;
+
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(x - b, y - b, w + 2 * b, h + 2 * b);
+
+    ctx.fillStyle = 'rgba(10,132,255,0.08)';
+    ctx.fillRect(x - b, y - b, w + 2 * b, h + 2 * b);
+    ctx.strokeStyle = 'rgba(10,132,255,0.4)';
+    ctx.setLineDash([2, 2]);
+    ctx.lineWidth = 0.5;
+    ctx.strokeRect(x - b, y - b, w + 2 * b, h + 2 * b);
+    ctx.setLineDash([]);
+
+    drawImageInSlot(ctx, x, y, w, h);
+
+    ctx.strokeStyle = '#1C1C1E';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x, y, w, h);
+  });
+}
+
+// ════════════════════════════════════════════════════════════════
+// Canvas drawing — Cover Preview
+// ════════════════════════════════════════════════════════════════
+function drawCover() {
+  const p = getParams();
+  const canvas = D.cvCover;
+  const container = D.pcCover;
+
+  const dpr = window.devicePixelRatio || 1;
+  const cw = container.clientWidth;
+  const ch = container.clientHeight;
+  canvas.width = cw * dpr;
+  canvas.height = ch * dpr;
+  canvas.style.width = cw + 'px';
+  canvas.style.height = ch + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, cw, ch);
+
+  const pad = 24;
+  const availW = cw - 2 * pad;
+  const availH = ch - 2 * pad;
+  const scale = Math.min(availW / p.CW, availH / p.CH);
+  const drawW = p.CW * scale;
+  const drawH = p.CH * scale;
+  const ox = (cw - drawW) / 2;
+  const oy = (ch - drawH) / 2;
+
+  // Cover base
+  ctx.fillStyle = '#2C2C2E';
+  ctx.shadowColor = 'rgba(0,0,0,0.5)';
+  ctx.shadowBlur = 12;
+  ctx.fillRect(ox, oy, drawW, drawH);
+  ctx.shadowBlur = 0;
+  ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(ox, oy, drawW, drawH);
+
+  // Cover label
+  ctx.fillStyle = 'rgba(235,235,245,0.4)';
+  ctx.font = '11px -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif';
+  ctx.fillText(`Cover ${p.CW}" × ${p.CH}"`, ox + 8, oy + 16);
+
+  // Sticker on cover
+  let sw = STATE.activeW;
+  let sh = STATE.activeH;
+  if (sw > p.CW || sh > p.CH) {
+    if (sh <= p.CW && sw <= p.CH) { [sw, sh] = [sh, sw]; }
+  }
+
+  const stickerW = sw * scale;
+  const stickerH = sh * scale;
+  const sx = ox + (drawW - stickerW) / 2;
+  const sy = oy + (drawH - stickerH) / 2;
+
+  ctx.shadowColor = 'rgba(0,0,0,0.4)';
+  ctx.shadowBlur = 8;
+  drawImageInSlot(ctx, sx, sy, stickerW, stickerH);
+  ctx.shadowBlur = 0;
+
+  ctx.strokeStyle = '#FFFFFF';
+  ctx.lineWidth = 1.5;
+  ctx.strokeRect(sx, sy, stickerW, stickerH);
+
+  // High contrast text badge
+  const labelText = `${sw.toFixed(1)}" × ${sh.toFixed(1)}"`;
+  ctx.font = 'bold 11px -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif';
+  const textWidth = ctx.measureText(labelText).width;
+  const pillW = textWidth + 14;
+  const pillH = 20;
+  const pillX = sx + (stickerW - pillW) / 2;
+  const pillY = sy + (stickerH - pillH) / 2;
+
+  ctx.fillStyle = 'rgba(28, 28, 30, 0.85)';
+  ctx.beginPath();
+  if (ctx.roundRect) {
+    ctx.roundRect(pillX, pillY, pillW, pillH, 4);
+  } else {
+    ctx.rect(pillX, pillY, pillW, pillH);
+  }
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+  ctx.lineWidth = 0.5;
+  ctx.stroke();
+
+  ctx.fillStyle = '#FFFFFF';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(labelText, sx + stickerW / 2, sy + stickerH / 2);
+  ctx.textAlign = 'start';
+  ctx.textBaseline = 'alphabetic';
+}
+
+// ════════════════════════════════════════════════════════════════
+// Draw image or placeholder inside a sticker slot
+// ════════════════════════════════════════════════════════════════
+function drawImageInSlot(ctx, x, y, w, h) {
+  if (STATE.img) {
+    const imgAR = STATE.img.width / STATE.img.height;
+    const slotAR = w / h;
+    let sx = 0, sy = 0, sW = STATE.img.width, sH = STATE.img.height;
+    if (imgAR > slotAR) {
+      sW = sH * slotAR;
+      sx = (STATE.img.width - sW) / 2;
+    } else {
+      sH = sW / slotAR;
+      sy = (STATE.img.height - sH) / 2;
+    }
+    ctx.drawImage(STATE.img, sx, sy, sW, sH, x, y, w, h);
+  } else {
+    ctx.fillStyle = '#2C2C2E';
+    ctx.fillRect(x, y, w, h);
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x, y, w, h);
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+// Event bindings
+// ════════════════════════════════════════════════════════════════
+
+// Global param inputs → full rebuild
+[D.sw, D.sh, D.cw, D.ch, D.bleed, D.gap, D.margin, D.gripper].forEach(el => {
+  el.addEventListener('input', () => {
+    D.custW.value = '';
+    D.custH.value = '';
+    D.slider.value = 100;
+    D.sliderVal.textContent = '100%';
+    updateAll();
+  });
+});
+
+[D.sheetPrice, D.packQty, D.orderQty].forEach(el => {
+  el.addEventListener('input', updateAll);
+});
+
+// Slider
+D.slider.addEventListener('input', () => {
+  D.sliderVal.textContent = D.slider.value + '%';
+  updateAll();
+});
+
+D.scaleMode.addEventListener('change', updateAll);
+
+// Custom inputs
+function resetSlider() {
+  if (D.slider.value !== '100') {
+    D.slider.value = 100;
+    D.sliderVal.textContent = '100%';
+  }
+}
+D.custW.addEventListener('input', () => { resetSlider(); updateAll(); });
+D.custH.addEventListener('input', () => { resetSlider(); updateAll(); });
+
+// Presets Logic
+D.sheetPreset.addEventListener('change', () => {
+  const val = D.sheetPreset.value;
+  if (val === 'custom') {
+    D.sheetCustomRow.style.display = 'flex';
+  } else {
+    D.sheetCustomRow.style.display = 'none';
+    const [w, h] = val.split(',');
+    D.sw.value = w;
+    D.sh.value = h;
+  }
+  updateAll();
+});
+
+D.coverPreset.addEventListener('change', () => {
+  const val = D.coverPreset.value;
+  if (val === 'custom') {
+    D.coverCustomRow.style.display = 'flex';
+  } else {
+    D.coverCustomRow.style.display = 'none';
+    const [w, h] = val.split(',');
+    D.cw.value = w;
+    D.ch.value = h;
+  }
+  updateAll();
+});
+
+// Image helper
+function handleImageFile(file) {
+  if (!file) return;
+  if (STATE.img) URL.revokeObjectURL(STATE.img.src);
+  const img = new Image();
+  img.onload = () => {
+    STATE.img = img;
+    D.fname.textContent = file.name;
+    D.btnRm.style.display = 'block';
+    drawSheet();
+    drawCover();
+  };
+  img.src = URL.createObjectURL(file);
+}
+
+// Image upload
+D.artFile.addEventListener('change', e => {
+  if (e.target.files && e.target.files[0]) {
+    handleImageFile(e.target.files[0]);
+  }
+});
+
+// Drag & Drop
+if (D.uploadZone) {
+  ['dragenter', 'dragover'].forEach(evt => {
+    D.uploadZone.addEventListener(evt, e => {
+      e.preventDefault();
+      e.stopPropagation();
+      D.uploadZone.classList.add('dragover');
+    }, false);
+  });
+  ['dragleave', 'drop'].forEach(evt => {
+    D.uploadZone.addEventListener(evt, e => {
+      e.preventDefault();
+      e.stopPropagation();
+      D.uploadZone.classList.remove('dragover');
+    }, false);
+  });
+  D.uploadZone.addEventListener('drop', e => {
+    const dt = e.dataTransfer;
+    if (dt && dt.files && dt.files[0]) {
+      handleImageFile(dt.files[0]);
+    }
+  }, false);
+}
+
+// Clear data
+if (D.btnClearData) {
+  D.btnClearData.addEventListener('click', () => {
+    if(confirm("Are you sure you want to clear all saved settings?")) {
+      localStorage.removeItem('stickerCalcState');
+      window.history.replaceState(null, '', window.location.pathname);
+      window.location.reload();
+    }
+  });
+}
+
+// Reset defaults
+if (D.btnReset) {
+  D.btnReset.addEventListener('click', () => {
+    D.sheetPreset.value = '13,19';
+    D.coverPreset.value = '10.5,9';
+    D.sw.value = '13';
+    D.sh.value = '19';
+    D.cw.value = '10.5';
+    D.ch.value = '9';
+    D.bleed.value = '0.0625';
+    D.gap.value = '0.125';
+    D.margin.value = '0.2';
+    D.gripper.value = '0';
+    D.custW.value = '';
+    D.custH.value = '';
+    D.sheetPrice.value = '';
+    D.packQty.value = '1';
+    D.orderQty.value = '';
+    D.slider.value = '100';
+    D.sliderVal.textContent = '100%';
+    D.scaleMode.value = 'aspect';
+    syncPresetsUI();
+    updateAll();
+  });
+}
+
+// Resize
+window.addEventListener('resize', () => { drawSheet(); drawCover(); });
+
+// Generate High-Res Image for PDF
+function generateHighResSheetImage(dpi) {
+  const p = getParams();
+  const layout = STATE.activeLayout;
+  if (!layout || layout.count === 0) return null;
+  
+  const canvas = document.createElement('canvas');
+  const wPx = p.SW * dpi;
+  const hPx = p.SH * dpi;
+  canvas.width = wPx;
+  canvas.height = hPx;
+  const ctx = canvas.getContext('2d');
+  
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(0, 0, wPx, hPx);
+  
+  ctx.fillStyle = 'rgba(255,69,58,0.1)';
+  const effectiveGripper = Math.max(p.margin, p.gripper);
+  ctx.fillRect(0, 0, wPx, p.margin * dpi);
+  ctx.fillRect(0, hPx - effectiveGripper * dpi, wPx, effectiveGripper * dpi);
+  ctx.fillRect(0, p.margin * dpi, p.margin * dpi, hPx - (p.margin + effectiveGripper) * dpi);
+  ctx.fillRect(wPx - p.margin * dpi, p.margin * dpi, p.margin * dpi, hPx - (p.margin + effectiveGripper) * dpi);
+  
+  ctx.strokeStyle = 'rgba(255,69,58,0.5)';
+  ctx.lineWidth = 1 * (dpi/96);
+  ctx.setLineDash([4 * (dpi/96), 4 * (dpi/96)]);
+  ctx.strokeRect(p.margin * dpi, p.margin * dpi, wPx - 2 * p.margin * dpi, hPx - (p.margin + effectiveGripper) * dpi);
+  ctx.setLineDash([]);
+  
+  layout.items.forEach(item => {
+    const x = item.x * dpi;
+    const y = item.y * dpi;
+    const w = item.w * dpi;
+    const h = item.h * dpi;
+    const b = p.bleed * dpi;
+    
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(x - b, y - b, w + 2 * b, h + 2 * b);
+    
+    ctx.fillStyle = 'rgba(10,132,255,0.08)';
+    ctx.fillRect(x - b, y - b, w + 2 * b, h + 2 * b);
+    ctx.strokeStyle = 'rgba(10,132,255,0.4)';
+    ctx.setLineDash([2 * (dpi/96), 2 * (dpi/96)]);
+    ctx.lineWidth = 0.5 * (dpi/96);
+    ctx.strokeRect(x - b, y - b, w + 2 * b, h + 2 * b);
+    ctx.setLineDash([]);
+    
+    drawImageInSlot(ctx, x, y, w, h);
+    
+    ctx.strokeStyle = '#1C1C1E';
+    ctx.lineWidth = 1 * (dpi/96);
+    ctx.strokeRect(x, y, w, h);
+  });
+  
+  return canvas.toDataURL('image/jpeg', 0.95);
+}
+
+// PDF Export
+const btnExportPdf = $('btn-export-pdf');
+if (btnExportPdf) {
+  btnExportPdf.addEventListener('click', () => {
+    const { jsPDF } = window.jspdf;
+    if (!jsPDF) {
+      alert("PDF library is still loading or failed to load.");
+      return;
+    }
+    const sw = +D.sw.value || 13;
+    const sh = +D.sh.value || 19;
+    const orientation = sw > sh ? 'landscape' : 'portrait';
+    const pdf = new jsPDF({
+      orientation: orientation,
+      unit: 'in',
+      format: [sw, sh]
+    });
+    const imgData = generateHighResSheetImage(300); // 300 DPI
+    if (!imgData) return;
+    pdf.addImage(imgData, 'JPEG', 0, 0, sw, sh);
+    pdf.save(`StickerLayout_${sw}x${sh}.pdf`);
+  });
+}
+
+// Clear Saved Data
+const btnClearData = $('btn-clear-data');
+if (btnClearData) {
+  btnClearData.addEventListener('click', () => {
+    if (confirm("Are you sure you want to clear all saved settings? This cannot be undone.")) {
+      localStorage.removeItem('stickerCalcState');
+      location.reload();
+    }
+  });
+}
+
+// ════════════════════════════════════════════════════════════════
+// Init
+// ════════════════════════════════════════════════════════════════
+loadFromLocalStorage();
+D.sliderVal.textContent = D.slider.value + '%';
+updateAll();
+</script>
+</body>
+</html>
