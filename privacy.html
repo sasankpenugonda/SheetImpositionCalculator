@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy | Sticker Imposition Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #07090e; --surface-1: #0b0e17; --surface-2: #111524;
+      --text: #f3f4f6; --text-secondary: #9ca3af; --blue: #3b82f6; --border: rgba(255, 255, 255, 0.05);
+    }
+    body {
+      font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text);
+      line-height: 1.6; margin: 0; padding: 0;
+    }
+    header {
+      padding: 1rem 1.25rem; border-bottom: 1px solid var(--border);
+      background: rgba(11, 14, 23, 0.8); backdrop-filter: blur(16px);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    header h1 { font-size: 1.0625rem; font-weight: 700; margin: 0; }
+    header a { color: var(--text-secondary); text-decoration: none; font-size: 0.8125rem; font-weight: 500; }
+    header a:hover { color: var(--text); }
+    main {
+      max-width: 800px; margin: 3rem auto; padding: 0 1.25rem;
+    }
+    h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+    .updated { color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 2rem; }
+    h2 { font-size: 1.25rem; margin-top: 2rem; margin-bottom: 1rem; color: var(--blue); }
+    p { margin-bottom: 1rem; color: var(--text-secondary); }
+    footer {
+      border-top: 1px solid var(--border); padding: 2rem 1rem; text-align: center;
+      margin-top: 4rem; background: var(--surface-1);
+    }
+    footer nav { display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 1rem; }
+    footer a { color: var(--text-secondary); text-decoration: none; font-size: 0.8125rem; }
+    footer a:hover { color: var(--text); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Sticker Imposition Calculator</h1>
+    <nav><a href="./index.html">← Back to Calculator</a></nav>
+  </header>
+  <main>
+    <h1>Privacy Policy</h1>
+    <div class="updated">Last updated: August 21, 2026</div>
+
+    <h2>1. 100% Client-Side Processing</h2>
+    <p>The Sticker Imposition Calculator was designed from the ground up to respect your privacy. All mathematical calculations, layout packing, and image processing happen entirely within your web browser (client-side).</p>
+
+    <h2>2. Your Artwork</h2>
+    <p>When you upload artwork (PNG, JPG) to visualize your layout, that file is <strong>never uploaded to our servers</strong>. It is read locally by your browser to draw the preview and generate the final PDF. Once you close the tab, the image data is gone.</p>
+
+    <h2>3. Local Storage</h2>
+    <p>To improve your experience, we use your browser's <code>localStorage</code> to remember your most recent settings (sheet size, margins, gaps). This data remains on your physical device and is never transmitted to us.</p>
+
+    <h2>4. Analytics</h2>
+    <p>We may use lightweight, privacy-focused analytics (such as Plausible) to understand how many people visit the site and which features are most popular. These tools do not track you across the web or store personally identifiable information.</p>
+
+    <h2>5. Contact</h2>
+    <p>If you have any questions about this privacy policy, please visit our <a href="./contact.html" style="color:var(--blue)">Contact page</a>.</p>
+  </main>
+  <footer>
+    <nav>
+      <a href="./index.html">Home</a>
+      <a href="./blog/index.html">Blog & Resources</a>
+      <a href="./privacy.html">Privacy Policy</a>
+      <a href="./terms.html">Terms of Service</a>
+      <a href="./contact.html">Contact Us</a>
+    </nav>
+    <p style="color:var(--text-secondary); font-size:0.75rem;">&copy; 2026 Sasank Tools. All rights reserved.</p>
+  </footer>
+</body>
+</html>

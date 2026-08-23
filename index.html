@@ -8,7 +8,8 @@
   <meta name="keywords" content="sticker sheet calculator, imposition calculator, print layout optimizer, stickers per sheet, print bleed calculator, sticker printing, print margin">
   <meta name="author" content="Sasank Tools">
   <link rel="canonical" href="https://example.com/stickersheetcalculator/">
-  
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <link rel="manifest" href="site.webmanifest">
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://example.com/stickersheetcalculator/">
@@ -48,7 +49,7 @@
       "step": [
         {
           "@type": "HowToStep",
-          "name": "Set Sheet and Cover Sizes",
+          "name": "Set Package and Sheet Sizes",
           "text": "Enter your physical paper size (e.g. 13x19) and the maximum size of your sticker."
         },
         {
@@ -94,66 +95,94 @@
   <style>
     /* ── Design Tokens ── */
     :root {
-      --bg: #000000;
-      --surface-1: rgba(30, 30, 32, 0.75);
-      --surface-2: #1C1C1E;
-      --surface-3: #2C2C2E;
-      --border: rgba(255, 255, 255, 0.1);
-      --border-hover: rgba(255, 255, 255, 0.2);
-      --text: #F2F2F7;
-      --text-2: #EBEBF5;
-      --text-3: rgba(235, 235, 245, 0.6);
-      --blue: #0A84FF;
-      --blue-glow: rgba(10, 132, 255, 0.3);
-      --cyan: #64D2FF;
-      --emerald: #30D158;
-      --rose: #FF453A;
-      --amber: #FF9F0A;
-      --radius: 12px;
-      --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --bg: #07090e;             /* Premium dark obsidian base */
+      --surface-1: #0b0e17;      /* Primary container/sidebar surface */
+      --surface-2: #111524;      /* Card/content surface */
+      --surface-3: #1a2035;      /* Inactive button, input, or chip background */
+      --surface-hover: #222942;  /* Focus or hover state background */
+      --border: rgba(255, 255, 255, 0.05);
+      --border-hover: rgba(255, 255, 255, 0.12);
+      --border-focus: #3b82f6;   /* Royal Blue */
+      
+      --text: #f3f4f6;           /* Neutral 100 */
+      --text-secondary: #9ca3af; /* Neutral 400 */
+      --text-muted: #6b7280;     /* Neutral 500 */
+      --text-3: rgba(243, 244, 246, 0.4); /* Faded placeholder text */
+
+      --blue: #3b82f6;
+      --blue-glow: rgba(59, 130, 246, 0.15);
+      --cyan: #06b6d4;
+      --emerald: #10b981;
+      --rose: #ef4444;
+      --amber: #f59e0b;
+      
+      --radius-lg: 12px;
+      --radius-md: 8px;
+      --radius-sm: 6px;
+      
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     }
 
     /* ── Reset ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      scroll-snap-type: y proximity;
+      scroll-behavior: smooth;
+    }
 
     body {
       font-family: var(--font);
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      line-height: 1.5;
+      line-height: 1.4;
       font-smoothing: antialiased;
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
 
     /* ── Header ── */
     header {
-      padding: 1rem 1.5rem;
-      border-bottom: 0.5px solid var(--border);
-      background: rgba(30, 30, 32, 0.75);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      position: sticky; top: 0; z-index: 50;
-      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.75rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      background: rgba(11, 14, 23, 0.8);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.25rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     }
     header h1 {
-      font-size: 1.2rem; font-weight: 600;
+      font-size: 1.0625rem;
+      font-weight: 700;
       color: var(--text);
-      letter-spacing: -0.01em;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
     .header-nav {
       display: flex;
-      gap: 1.5rem;
-      margin-left: 2rem;
+      gap: 1.25rem;
+      margin-left: 1.5rem;
       margin-right: auto;
     }
     .header-nav a {
-      color: var(--text-3);
+      color: var(--text-secondary);
       text-decoration: none;
-      font-size: 0.85rem;
+      font-size: 0.8125rem;
       font-weight: 500;
-      transition: color 0.15s, border-bottom-color 0.15s;
-      padding: 0.25rem 0;
+      transition: all 0.2s ease;
+      padding: 0.2rem 0;
       border-bottom: 2px solid transparent;
     }
     .header-nav a:hover {
@@ -166,381 +195,691 @@
     }
 
     /* ── Layout ── */
-    .app { display: flex; height: calc(100vh - 57px); overflow: hidden; }
+    .app {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 1rem;
+      max-width: 1440px;
+      margin: 1rem auto;
+      padding: 0 1rem;
+      align-items: start;
+      min-height: auto;
+    }
     @media (max-width: 1100px) {
-      .app { flex-direction: column; height: auto; overflow: visible; }
+      .app {
+        grid-template-columns: 1fr;
+        margin: 0.75rem auto;
+        padding: 0 0.75rem;
+        gap: 0.75rem;
+      }
     }
 
     /* ── Sidebar ── */
     .sidebar {
-      width: 380px; flex-shrink: 0;
-      padding: 1.25rem;
       background: var(--surface-1);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-right: 0.5px solid var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      position: sticky;
+      top: calc(51px + 1rem);
+      max-height: calc(100vh - 51px - 2rem);
       overflow-y: auto;
-      display: flex; flex-direction: column; gap: 1.25rem;
+      box-shadow: var(--shadow-md);
     }
     @media (max-width: 1100px) {
-      .sidebar { width: 100%; border-right: none; border-bottom: 0.5px solid var(--border); overflow-y: visible; }
+      .sidebar {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        padding: 1rem;
+      }
     }
 
+    /* ── Cards & Elements ── */
     .card {
       background: var(--surface-2);
-      border: 0.5px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.1rem;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1rem;
+      box-shadow: var(--shadow-md);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card:hover {
+      border-color: rgba(255, 255, 255, 0.08);
     }
     .card h2 {
-      font-size: 0.8rem; font-weight: 600; text-transform: uppercase;
-      letter-spacing: 0.05em; color: var(--text-3); margin-bottom: 0.9rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
     }
 
     .row { display: flex; gap: 0.75rem; }
-    .field { flex: 1; display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 0.75rem; }
+    .field { flex: 1; display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 1rem; }
     .field:last-child { margin-bottom: 0; }
     .field label {
-      font-size: 0.75rem; font-weight: 500; color: var(--text-3);
-      display: flex; align-items: center; gap: 0.35rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
     }
+    
     .tip {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 14px; height: 14px; border-radius: 50%;
-      background: var(--surface-3); font-size: 8px; cursor: help;
-      position: relative; border: 0.5px solid var(--border);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--surface-3);
+      font-size: 8px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      cursor: help;
+      position: relative;
+      border: 1px solid var(--border);
+      transition: all 0.2s ease;
+    }
+    .tip:hover {
+      background: var(--blue);
+      color: #ffffff;
+      border-color: var(--blue);
     }
     .tip::after {
-      content: attr(data-t); position: absolute; bottom: calc(100% + 6px);
-      left: 50%; transform: translateX(-50%);
-      background: var(--surface-3); border: 0.5px solid var(--border); color: var(--text);
-      padding: 0.45rem 0.6rem; border-radius: 8px; font-size: 0.7rem;
-      width: 200px; white-space: normal; line-height: 1.4;
-      opacity: 0; pointer-events: none; transition: opacity 0.15s; z-index: 99;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      content: attr(data-t);
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%) translateY(3px);
+      background: #111524;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text);
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      width: 200px;
+      white-space: normal;
+      line-height: 1.4;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 99;
+      box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
     }
-    .tip:hover::after { opacity: 1; }
+    .tip:hover::after {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
 
     input[type="number"], select {
       width: 100%;
-      background: var(--surface-3); border: 0.5px solid var(--border);
-      color: var(--text); padding: 0.5rem 0.7rem; border-radius: 8px;
-      font-size: 0.85rem; font-family: inherit; transition: all 0.15s;
+      background: var(--surface-3);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius-md);
+      font-size: 0.8125rem;
+      font-family: inherit;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    input[type="number"]:hover, select:hover {
+      border-color: var(--border-hover);
+      background: var(--surface-hover);
     }
     input[type="number"]:focus, select:focus {
-      outline: none; border-color: var(--blue);
-      box-shadow: 0 0 0 3px var(--blue-glow);
+      outline: none;
+      border-color: var(--blue);
+      background: var(--surface-hover);
+      box-shadow: 0 0 0 1px var(--blue), 0 0 10px var(--blue-glow);
     }
-    select option { background: var(--surface-3); }
+    select option { background: #0f1322; color: var(--text); }
 
-    /* ── Slider ── */
+    /* ── Range Slider ── */
     .slider-wrap { display: flex; flex-direction: column; gap: 0.5rem; }
     .slider-top { display: flex; justify-content: space-between; align-items: baseline; }
-    .slider-top .val { font-size: 1.1rem; font-weight: 600; color: var(--blue); }
+    .slider-top label { font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); }
+    .slider-top .val { font-size: 1rem; font-weight: 700; color: var(--blue); text-shadow: 0 0 10px rgba(59, 130, 246, 0.3); }
     input[type="range"] {
-      -webkit-appearance: none; width: 100%; height: 5px;
-      background: rgba(255,255,255,0.15); border-radius: 99px; outline: none;
+      -webkit-appearance: none;
+      width: 100%;
+      height: 5px;
+      background: var(--surface-3);
+      border-radius: 99px;
+      outline: none;
+      border: 1px solid var(--border);
     }
     input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%;
-      background: #FFFFFF; cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.5); border: 0.5px solid rgba(0,0,0,0.1);
-      transition: transform 0.1s;
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #ffffff;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+      border: 1px solid rgba(0,0,0,0.2);
+      transition: transform 0.1s ease;
     }
-    input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.1); }
-    .slider-ends { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-3); }
+    input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+    .slider-ends { display: flex; justify-content: space-between; font-size: 0.65rem; color: var(--text-muted); font-weight: 500; }
 
-    /* ── Warning ── */
+    /* ── Warning & Error ── */
     .warn {
-      display: none; /* JS toggles via style.display = 'flex' */
-      align-items: center; gap: 0.5rem;
-      padding: 0.6rem 0.8rem; margin-top: 0.5rem;
-      background: rgba(255,69,58,0.1); border: 0.5px solid rgba(255,69,58,0.3);
-      border-radius: 8px; font-size: 0.78rem; color: var(--rose);
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.625rem 0.875rem;
+      margin-top: 0.5rem;
+      background: rgba(239, 68, 68, 0.08);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      border-radius: var(--radius-md);
+      font-size: 0.78rem;
+      color: var(--rose);
+      line-height: 1.35;
     }
 
-    /* ── File Upload ── */
+    /* ── File Dropzone ── */
     .upload {
-      border: 1px dashed rgba(255,255,255,0.2); border-radius: 10px;
-      padding: 1.2rem; text-align: center; cursor: pointer;
-      transition: all 0.2s; position: relative; background: var(--surface-3);
+      border: 2px dashed rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      position: relative;
+      background: rgba(255, 255, 255, 0.01);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
     }
-    .upload:hover { border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.05); }
+    .upload:hover {
+      border-color: var(--blue);
+      background: rgba(59, 130, 246, 0.02);
+    }
+    .upload.dragover {
+      border-color: var(--blue);
+      background: rgba(59, 130, 246, 0.06);
+      box-shadow: 0 0 12px var(--blue-glow);
+    }
     .upload input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
-    .upload .ico { font-size: 1.3rem; margin-bottom: 0.3rem; }
-    .upload .txt { font-size: 0.75rem; color: var(--text-3); }
-    .upload .fname { font-size: 0.8rem; color: var(--blue); margin-top: 0.4rem; word-break: break-all; }
+    .upload .ico { font-size: 1.5rem; transition: transform 0.2s ease; }
+    .upload:hover .ico { transform: translateY(-2px); }
+    .upload .txt { font-size: 0.78rem; color: var(--text-secondary); font-weight: 500; }
+    .upload .fname { font-size: 0.78rem; color: var(--blue); margin-top: 0.2rem; word-break: break-all; font-weight: 600; }
     .btn-rm {
-      display: none; width: 100%; margin-top: 0.6rem;
-      padding: 0.4rem; border-radius: 8px; border: 0.5px solid rgba(255,69,58,0.3);
-      background: rgba(255,69,58,0.1); color: var(--rose);
-      font-family: inherit; font-size: 0.78rem; cursor: pointer; transition: all 0.15s;
+      display: none; width: 100%; margin-top: 0.5rem;
+      padding: 0.4rem; border-radius: var(--radius-md); border: 1px solid rgba(239, 68, 68, 0.2);
+      background: rgba(239, 68, 68, 0.08); color: var(--rose);
+      font-family: inherit; font-weight: 600; font-size: 0.78rem; cursor: pointer; transition: all 0.2s ease;
     }
-    .btn-rm:hover { background: rgba(255,69,58,0.2); }
+    .btn-rm:hover { background: rgba(239, 68, 68, 0.15); border-color: var(--rose); }
 
-    /* ── Main Workspace ── */
+    /* ── Workspace ── */
     .workspace {
-      flex: 1; padding: 1.25rem; overflow: hidden;
-      display: flex; flex-direction: column; gap: 1.25rem;
-      background: var(--bg);
-      height: 100%;
-    }
-    @media (max-width: 1100px) {
-      .workspace { overflow: visible; height: auto; }
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      min-width: 0;
+      background: transparent;
     }
 
-    /* Stats Row */
-    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.75rem; }
+    /* Stats Grid */
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(115px, 1fr)); gap: 0.75rem; }
     @media (max-width: 768px) { .stats { grid-template-columns: repeat(2, 1fr); } }
     .stat {
-      background: var(--surface-2); border: 0.5px solid var(--border);
-      border-radius: var(--radius); padding: 0.8rem 1rem;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+      background: var(--surface-1);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 0.75rem 1rem;
+      box-shadow: var(--shadow-md);
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
     }
-    .stat .lbl { font-size: 0.7rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.04em; }
-    .stat .num { font-size: 1.3rem; font-weight: 600; margin-top: 0.15rem; letter-spacing: -0.02em; }
+    .stat:hover { border-color: var(--border-hover); transform: translateY(-1px); }
+    .stat::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 4px; height: 100%;
+      background: transparent;
+    }
+    .stat.s1::before { background: var(--blue); }
+    .stat.s2::before { background: var(--emerald); }
+    .stat.s3::before { background: var(--amber); }
+    .stat .lbl { font-size: 0.65rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.08em; }
+    .stat .num { font-size: 1.375rem; font-weight: 800; margin-top: 0.35rem; letter-spacing: -0.03em; line-height: 1; }
     .stat.s1 .num { color: var(--text); }
-    .stat.s2 .num { color: var(--emerald); }
-    .stat.s3 .num { color: var(--amber); }
-    .stat.s-cost { display: none; } /* Hidden by default until inputs are provided */
+    .stat.s2 .num { color: var(--emerald); text-shadow: 0 0 8px rgba(16, 185, 129, 0.15); }
+    .stat.s3 .num { color: var(--amber); text-shadow: 0 0 8px rgba(245, 158, 11, 0.15); }
+    .stat.s-cost { display: none; } 
 
-    /* Order Summary Bar */
-    .order-summary {
-      display: none; /* JS toggles */
-      background: rgba(10, 132, 255, 0.08);
-      border: 0.5px solid rgba(10, 132, 255, 0.3);
-      border-radius: 12px;
+    /* Order Planning Relocated Inside Card */
+    #order-planning-section {
+      background: var(--surface-1);
+    }
+    #order-planning-section h2 {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--blue);
+      letter-spacing: normal;
+      text-transform: none;
+      border-bottom: 1px solid var(--border);
       padding: 1rem 1.25rem;
+      margin-bottom: 0;
+    }
+    #order-planning-section .card-content {
+      padding: 1.25rem;
+    }
+    #order-planning-section .section-desc {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    /* Order Summary styling */
+    .order-summary {
+      display: none;
+      background: rgba(59, 130, 246, 0.04);
+      border: 1px solid rgba(59, 130, 246, 0.15);
+      border-radius: var(--radius-lg);
+      padding: 1rem;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 1rem;
+      gap: 0.75rem;
+      margin-top: 1rem;
+      box-shadow: inset 0 0 8px rgba(59, 130, 246, 0.02);
     }
-    .order-summary .os-main { display: flex; flex-direction: column; gap: 0.2rem; }
-    .order-summary .os-title { font-size: 0.75rem; font-weight: 600; color: var(--blue); text-transform: uppercase; letter-spacing: 0.05em; }
-    .order-summary .os-primary { font-size: 1.1rem; color: var(--text); font-weight: 500; }
-    .order-summary .os-primary strong { font-weight: 700; }
-    .order-summary .os-details { font-size: 0.8rem; color: var(--text-3); }
-    .order-summary .os-waste { font-size: 0.8rem; color: var(--amber); }
+    .order-summary .os-main { display: flex; flex-direction: column; gap: 0.25rem; }
+    .order-summary .os-title { font-size: 0.65rem; font-weight: 700; color: var(--blue); text-transform: uppercase; letter-spacing: 0.08em; }
+    .order-summary .os-primary { font-size: 1rem; color: var(--text); font-weight: 500; }
+    .order-summary .os-primary strong { font-weight: 700; color: #ffffff; }
+    .order-summary .os-details { font-size: 0.78rem; color: var(--text-secondary); font-weight: 500; }
+    .order-summary .os-waste { font-size: 0.78rem; color: var(--amber); font-weight: 600; }
 
-    /* Collapsible details cards */
+    /* Collapsible Details Panel */
     details.details-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: var(--surface-2);
       transition: all 0.2s ease;
     }
+    details.details-card[open] {
+      border-color: rgba(255, 255, 255, 0.08);
+      box-shadow: var(--shadow-md);
+    }
     details.details-card summary {
-      font-size: 0.8rem; font-weight: 600; text-transform: uppercase;
-      letter-spacing: 0.05em; color: var(--text-3); cursor: pointer;
-      display: flex; justify-content: space-between; align-items: center;
-      list-style: none; outline: none;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      list-style: none;
+      outline: none;
       user-select: none;
+      padding: 0.875rem 1.125rem;
     }
-    details.details-card summary::-webkit-details-marker {
-      display: none;
-    }
+    details.details-card summary::-webkit-details-marker { display: none; }
     details.details-card summary::after {
-      content: '▾';
-      font-size: 0.9rem;
-      color: var(--text-3);
-      transition: transform 0.2s ease;
+      content: '';
+      display: inline-block;
+      width: 10px; height: 10px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='rgba(156, 163, 175, 0.8)' stroke-width='3'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E");
+      background-size: contain;
+      background-repeat: no-repeat;
+      transition: transform 0.2s ease, filter 0.2s ease;
     }
     details.details-card[open] summary::after {
       transform: rotate(180deg);
-      color: var(--blue);
+      filter: drop-shadow(0 0 2px var(--blue));
     }
     details.details-card .details-content {
-      margin-top: 0.9rem;
-      animation: sweep 0.2s ease-out;
+      padding: 0 1.125rem 1.125rem 1.125rem;
+      animation: sweep 0.2s cubic-bezier(0, 0, 0.2, 1);
     }
     @keyframes sweep {
       0% { opacity: 0; transform: translateY(-4px); }
       100% { opacity: 1; transform: translateY(0); }
     }
 
-    /* Candidates */
-    .cands {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
+    /* Candidates List */
+    .cands { display: flex; flex-direction: column; gap: 0.5rem; }
     .cand {
       background: var(--surface-3);
-      border: 0.5px solid var(--border);
-      border-radius: 8px;
-      padding: 0.6rem 0.8rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.625rem 0.875rem;
       cursor: pointer;
-      transition: all 0.15s;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      box-shadow: var(--shadow-sm);
     }
     .cand:hover {
       border-color: var(--border-hover);
-      background: rgba(255,255,255,0.03);
+      background: var(--surface-hover);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
     }
     .cand.on {
       border-color: var(--blue);
-      background: rgba(10, 132, 255, 0.08);
-      box-shadow: 0 0 0 1px var(--blue);
+      background: rgba(59, 130, 246, 0.08);
+      box-shadow: 0 0 0 1px var(--blue), 0 3px 8px var(--blue-glow);
     }
-    .cand .c-left {
+    .cand .c-left { display: flex; flex-direction: column; gap: 0.15rem; }
+    .cand .c-right { display: flex; flex-direction: column; align-items: flex-end; gap: 0.15rem; }
+    .cand .c-size { font-size: 0.8125rem; font-weight: 700; color: var(--text); }
+    .cand .c-grid { font-size: 0.7rem; color: var(--text-secondary); font-weight: 500; }
+    .cand .c-count { font-size: 0.875rem; font-weight: 800; color: var(--emerald); }
+    .cand .c-eff { font-size: 0.7rem; color: var(--text-secondary); font-weight: 500; }
+
+    /* Layout Toggle Bar */
+    .panels-header-bar {
       display: flex;
-      flex-direction: column;
-      gap: 0.1rem;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.25rem;
+      margin-bottom: 0.125rem;
     }
-    .cand .c-right {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 0.1rem;
+    .view-toggles {
+      display: inline-flex;
+      background: var(--surface-1);
+      padding: 0.2rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      gap: 0.125rem;
     }
-    .cand .c-size {
-      font-size: 0.85rem;
+    .view-toggle-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 0.25rem 0.625rem;
+      font-size: 0.72rem;
       font-weight: 600;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .view-toggle-btn:hover {
       color: var(--text);
+      background: rgba(255, 255, 255, 0.02);
     }
-    .cand .c-grid {
-      font-size: 0.7rem;
-      color: var(--text-3);
-    }
-    .cand .c-count {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: var(--emerald);
-    }
-    .cand .c-eff {
-      font-size: 0.7rem;
-      color: var(--text-3);
+    .view-toggle-btn.active {
+      color: #ffffff;
+      background: var(--surface-3);
+      box-shadow: var(--shadow-sm);
     }
 
-    /* Panels */
-    .panels { display: grid; grid-template-columns: 1.5fr 1fr; gap: 1.25rem; flex: 1; min-height: 0; }
+    /* Canvas Panels Wrapper */
+    .panels { display: grid; grid-template-columns: 1.2fr 1fr; gap: 1rem; transition: all 0.2s ease; }
     @media (max-width: 1200px) { .panels { grid-template-columns: 1fr; } }
+    
+    .panels.view-sheet { grid-template-columns: 1fr; }
+    .panels.view-sheet .panel:nth-child(2) { display: none; }
+    
+    .panels.view-cover { grid-template-columns: 1fr; }
+    .panels.view-cover .panel:nth-child(1) { display: none; }
+
     .panel {
-      background: var(--surface-2); border: 0.5px solid var(--border);
-      border-radius: 16px; display: flex; flex-direction: column;
-      overflow: hidden; min-height: 0;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+      background: var(--surface-1);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      transition: border-color 0.2s ease;
     }
+    .panel:hover { border-color: var(--border-hover); }
+    
     .panel-top {
-      padding: 0.8rem 1.2rem; border-bottom: 0.5px solid var(--border);
-      display: flex; justify-content: space-between; align-items: center;
-      background: rgba(255,255,255,0.02);
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.01);
     }
     .panel-top h3 {
-      font-size: 0.85rem; font-weight: 600; color: var(--text);
-      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
     }
     .panel-top h3::before {
-      content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--text-3);
+      content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--text-muted);
     }
     .panel-top.alt h3::before { background: var(--blue); }
-    .panel-top .sub { font-size: 0.72rem; color: var(--text-3); }
+    .panel-top .sub { font-size: 0.7rem; color: var(--text-secondary); font-weight: 500; }
     .panel-canvas {
-      flex: 1; display: flex; align-items: center; justify-content: center;
-      background: var(--bg); padding: 1rem; overflow: hidden;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #06070a;
+      overflow: hidden;
+      position: relative;
+      min-height: 400px;
     }
 
-    /* Efficiency help */
+    .step-header {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--blue);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.35rem;
+    }
+
+    /* Efficiency details */
     .eff-help {
-      font-size: 0.72rem; color: var(--text-3); padding: 0.5rem 0 0;
-      border-top: 0.5px solid var(--border); margin-top: 0.5rem;
+      font-size: 0.7rem; color: var(--text-secondary); padding: 0.4rem 0 0;
+      margin-top: 0.4rem; font-weight: 500; line-height: 1.35;
     }
 
-    /* Presets & Chips */
-    .presets { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    /* Preset Chips & Sizes */
+    .presets { display: flex; flex-wrap: wrap; gap: 0.35rem; }
     .chip {
-      background: var(--surface-3); border: 0.5px solid var(--border);
-      color: var(--text-2); padding: 0.25rem 0.55rem; border-radius: 6px;
-      font-size: 0.7rem; font-family: inherit; cursor: pointer; transition: all 0.15s;
+      background: var(--surface-3); border: 1px solid var(--border);
+      color: var(--text-secondary); padding: 0.25rem 0.5rem; border-radius: var(--radius-sm);
+      font-size: 0.7rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease;
     }
-    .chip:hover { background: var(--blue); color: #FFFFFF; border-color: var(--blue); }
+    .chip:hover {
+      background: var(--blue); color: #ffffff; border-color: var(--blue);
+      box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
+    }
 
-    /* Dragover Upload */
-    .upload.dragover { border-color: var(--blue); background: rgba(10, 132, 255, 0.1); }
-
-    /* Removed active candidate badge in favor of clean blue border styling */
     .cand:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
 
-    /* Reset button */
+    /* Action & Reset buttons */
     .btn-reset {
-      background: transparent; border: 0.5px solid var(--border);
-      color: var(--text-3); padding: 0.35rem 0.75rem; border-radius: 6px;
-      font-size: 0.75rem; font-family: inherit; cursor: pointer;
-      transition: all 0.15s; margin-left: auto;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 0.3rem 0.625rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.72rem;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
     }
-    .btn-reset:hover { background: var(--surface-3); color: var(--text); border-color: var(--border-hover); }
+    .btn-reset:hover {
+      background: var(--surface-3);
+      color: var(--text);
+      border-color: var(--border-hover);
+    }
+    
+    .btn-swap {
+      padding: 0.15rem 0.4rem;
+      font-size: 0.7rem;
+      background: var(--surface-3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.2rem;
+    }
+    .btn-swap:hover {
+      background: var(--surface-hover);
+      color: var(--text);
+      border-color: var(--border-hover);
+    }
+    .btn-swap span {
+      transition: transform 0.25s ease;
+      display: inline-block;
+    }
+    .btn-swap:hover span {
+      transform: rotate(180deg);
+    }
 
-    /* ── Scrollbar ── */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    #btn-export-pdf {
+      background: var(--blue) !important;
+      color: #ffffff !important;
+      border: 1px solid var(--blue) !important;
+      border-radius: var(--radius-md) !important;
+      padding: 0.5rem 1rem !important;
+      font-weight: 600 !important;
+      box-shadow: 0 4px 10px var(--blue-glow) !important;
+      transition: all 0.2s ease !important;
+    }
+    #btn-export-pdf:hover {
+      background: #2563eb !important;
+      border-color: #2563eb !important;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4) !important;
+      transform: translateY(-1px);
+    }
+    #btn-export-png {
+      background: var(--surface-3) !important;
+      color: var(--text) !important;
+      border: 1px solid var(--border) !important;
+      border-radius: var(--radius-md) !important;
+      padding: 0.5rem 1rem !important;
+      font-weight: 600 !important;
+      transition: all 0.2s ease !important;
+    }
+    #btn-export-png:hover {
+      background: var(--surface-hover) !important;
+      border-color: var(--border-hover) !important;
+      transform: translateY(-1px);
+    }
+
+    #btn-reset-all {
+      background: rgba(239, 68, 68, 0.08) !important;
+      color: var(--rose) !important;
+      border: 1px solid rgba(239, 68, 68, 0.2) !important;
+      transition: all 0.2s ease !important;
+    }
+    #btn-reset-all:hover {
+      background: rgba(239, 68, 68, 0.15) !important;
+      border-color: var(--rose) !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.3) !important;
+    }
+
+    /* ── Custom Scrollbar ── */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 99px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
 
     /* ── Mobile Optimization ── */
     @media (max-width: 1200px) {
-      .panel-canvas { min-height: 450px; }
+      .panel-canvas { min-height: 400px; }
     }
     @media (max-width: 768px) {
-      .panel-canvas { min-height: 300px; }
-      header { flex-wrap: wrap; padding: 1rem; gap: 0.5rem; }
-      .header-nav { margin-left: 0; margin-top: 0.5rem; width: 100%; order: 3; justify-content: flex-start; gap: 1rem; }
-      header h1 { font-size: 1.1rem; }
-      .btn-reset { padding: 0.35rem 0.6rem; font-size: 0.7rem; }
-      .sidebar { padding: 1rem; gap: 1rem; }
-      .workspace { padding: 1rem; gap: 1rem; }
-      .row { flex-direction: column; gap: 0.5rem; }
-      .card { padding: 0.9rem; }
-      /* Hide Cover Mockup on very small screens to save space */
+      .panel-canvas { min-height: 280px; }
+      header { flex-wrap: wrap; padding: 0.75rem 1rem; gap: 0.5rem; }
+      .header-nav { margin-left: 0; margin-top: 0.2rem; width: 100%; order: 3; justify-content: flex-start; gap: 1rem; }
+      header h1 { font-size: 1rem; }
+      .btn-reset { padding: 0.25rem 0.5rem; font-size: 0.6875rem; }
+      .sidebar { padding: 0.875rem; gap: 0.75rem; }
+      .workspace { padding: 0.875rem; gap: 0.75rem; }
+      .row { flex-direction: column; gap: 0.625rem; }
+      .card { padding: 0.875rem; }
       .panel:nth-child(2) { display: none; }
-      .upload .txt::before { content: "Tap to upload artwork"; font-size: 0.8rem; }
+      .upload .txt::before { content: "Tap to upload artwork"; font-size: 0.78rem; }
       .upload .txt { font-size: 0; }
     }
     
     /* ── Docs & Footer ── */
     .docs-section {
-      max-width: 1100px;
-      margin: 3rem auto;
-      padding: 0 1.5rem;
+      max-width: 1440px;
+      margin: 2rem auto 1rem auto;
+      padding: 0 1rem;
     }
-    .docs-section h2 {
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
+    .docs-section details.details-card summary {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      text-transform: none;
+      letter-spacing: normal;
       color: var(--text);
+      padding: 1rem 1.25rem;
+    }
+    .docs-section details.details-card .details-content {
+      padding: 0 1.25rem 1.25rem 1.25rem;
     }
     .docs-section h3 {
-      font-size: 1.1rem;
-      margin-top: 2rem;
-      margin-bottom: 0.75rem;
-      color: var(--text-2);
+      font-size: 0.875rem;
+      margin-top: 1.25rem;
+      margin-bottom: 0.4rem;
+      color: var(--text);
+      font-weight: 700;
     }
     .docs-section p, .docs-section li {
-      color: var(--text-3);
-      line-height: 1.6;
-      margin-bottom: 1rem;
-      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 0.625rem;
+      font-size: 0.8125rem;
     }
     .docs-section ul {
-      padding-left: 1.5rem;
-      margin-bottom: 1.5rem;
+      padding-left: 1rem;
+      margin-bottom: 1rem;
     }
     .docs-section strong {
       color: var(--text);
+      font-weight: 600;
     }
     .docs-section a {
       color: var(--blue);
       text-decoration: none;
+      font-weight: 500;
     }
     .docs-section a:hover {
       text-decoration: underline;
     }
     footer {
-      border-top: 0.5px solid var(--border);
-      padding: 2rem 1.5rem;
+      border-top: 1px solid var(--border);
+      padding: 2rem 1rem;
       text-align: center;
-      margin-top: 4rem;
-      background: var(--surface-2);
+      margin-top: 2rem;
+      background: var(--surface-1);
     }
     footer nav {
       display: flex;
@@ -549,17 +888,18 @@
       margin-bottom: 1rem;
     }
     footer a {
-      color: var(--text-3);
+      color: var(--text-secondary);
       text-decoration: none;
-      font-size: 0.9rem;
-      transition: color 0.2s;
+      font-size: 0.8125rem;
+      transition: color 0.2s ease;
+      font-weight: 500;
     }
     footer a:hover {
       color: var(--text);
     }
     footer p {
-      color: var(--text-3);
-      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-size: 0.72rem;
     }
   </style>
 </head>
@@ -605,63 +945,121 @@
   <h1>📐 Sticker Imposition</h1>
   <nav class="header-nav">
     <a href="./index.html" class="active">Calculator</a>
+    <a href="#order-planning-section">Cost Calculator ↓</a>
     <a href="./blog/index.html">Guides & Blog</a>
   </nav>
-    <button type="button" class="btn-reset" id="btn-reset" style="margin-right: 1rem;">Reset Defaults</button>
-    <button type="button" class="btn-reset" id="btn-clear-data" style="background: rgba(255,69,58,0.1); color: #FF453A;">Clear Saved Data</button>
+    <button type="button" class="btn-reset" id="btn-reset-all">Reset Calculator</button>
   </header>
 
-<div class="app">
+<section class="hero" style="max-width: 1200px; margin: 0 auto; text-align: center; padding: 10vh 1.25rem 25vh; position: sticky; top: 51px; z-index: 1; scroll-snap-align: start; min-height: 80vh; display: flex; flex-direction: column; justify-content: center;">
+  <h2 style="font-size: 3.2rem; font-weight: 800; line-height: 1.15; margin-bottom: 1.5rem; color: #ffffff; letter-spacing: -0.03em;">
+    Find the right sticker size for your product — and how many you get per sheet.
+  </h2>
+  <p style="font-size: 1.1rem; color: var(--text-secondary); max-width: 800px; margin: 0 auto; line-height: 1.6;">
+    Tell us your package size and your printer's sheet size. We'll show you what sticker sizes fit, how many print per sheet, and exactly how it'll look on your product.
+  </p>
+</section>
+
+<div class="app-layer" style="position: relative; z-index: 10; background: var(--bg); padding-top: 1.5rem; scroll-snap-align: start; border-top: 1px solid rgba(255,255,255,0.05); box-shadow: 0 -20px 40px rgba(0,0,0,0.5);">
+  <div class="app">
   <!-- ─── Sidebar ─── -->
   <aside class="sidebar">
 
-    <!-- Slider Control -->
-    <div class="card" style="border-color: rgba(10,132,255,0.25);">
-      <h2>Size & Yield Control</h2>
-      <div class="slider-wrap">
-        <div class="slider-top">
-          <label for="scale-slider" style="font-size:0.8rem; font-weight:600; color:var(--text);">Sticker Scale</label>
-          <span class="val" id="slider-val">100%</span>
-        </div>
-        <input type="range" id="scale-slider" min="10" max="100" value="100" step="1">
-        <div class="slider-ends">
-          <span>Smaller sticker → more per sheet</span>
-          <span>Full cover size</span>
-        </div>
-      </div>
-      <div class="field" style="margin-top:0.9rem; margin-bottom:0;">
-        <label for="scale-mode">Scale Mode</label>
-        <select id="scale-mode">
-          <option value="aspect">Scale Both (Keep Aspect Ratio)</option>
-          <option value="lock-w">Lock Width — Vary Height</option>
-          <option value="lock-h">Lock Height — Vary Width</option>
+    <h2 class="step-header">Step 1: Dimensions</h2>
+    
+    <div class="card" style="border: none; padding: 0.5rem 0 0 0; box-shadow: none; background: transparent;">
+      <div class="field" style="margin-bottom: 0.25rem;">
+        <label for="cover-preset" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+          <span style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: #fff;">
+            Package Size
+            <span id="opt-bulb" class="tip" tabindex="0" role="tooltip" data-t="" style="display: none; color: #FF9500; font-size: 0.8rem; font-weight: 500; cursor: pointer; padding: 0.2rem 0.5rem; border-radius: 12px; background: rgba(255,165,0,0.15); border: 1px solid rgba(255,165,0,0.3); width: auto; height: auto; line-height: 1;">💡 Tip</span>
+          </span>
+          <button type="button" class="btn-swap" id="btn-swap-cover" title="Swap Width & Height"><span>↻</span> Swap</button>
+        </label>
+        <p style="font-size: 0.75rem; color: var(--text-secondary); margin: 0 0 0.5rem 0; line-height: 1.4;">The size of the box, pouch, or container the sticker will go on.</p>
+        <select id="cover-preset">
+          <option value="10.5,9" selected>10.5 × 9 (Custom Package)</option>
+          <option value="2,2">2 × 2</option>
+          <option value="3,3">3 × 3</option>
+          <option value="4,4">4 × 4</option>
+          <option value="4,6">4 × 6</option>
+          <option value="5,7">5 × 7</option>
+          <option value="custom">Custom Size...</option>
         </select>
       </div>
-    </div>
-
-    <!-- Custom Override -->
-    <div class="card">
-      <h2>Custom Sticker Size (in)</h2>
-      <p style="font-size:0.72rem; color:var(--text-3); margin-bottom:0.7rem;">
-        Enter width only → height auto-calculated. Enter both → full override.
-      </p>
-      <div class="row">
-        <div class="field">
-          <label for="cust-w">Width</label>
-          <input type="number" id="cust-w" step="0.1" min="0.5" placeholder="Auto">
-        </div>
-        <div class="field">
-          <label for="cust-h">Height</label>
-          <input type="number" id="cust-h" step="0.1" min="0.5" placeholder="Auto">
-        </div>
+      <div class="row" id="cover-custom-row" style="display: none; margin-bottom: 1.25rem;">
+        <div class="field"><label for="cw">Width</label><input type="number" id="cw" value="10.5" step="0.5" min="0.5"></div>
+        <div class="field"><label for="ch">Height</label><input type="number" id="ch" value="9" step="0.5" min="0.5"></div>
       </div>
-      <div class="warn" id="warn">⚠️ Sticker exceeds Cover in both orientations!</div>
-    </div>
 
+      <div class="field" style="margin-bottom: 0.25rem; margin-top: 1rem;">
+        <label for="sheet-preset" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+          <span style="font-size: 0.85rem; color: #fff;">Sheet Size</span>
+          <button type="button" class="btn-swap" id="btn-swap-sheet" title="Swap Width & Height"><span>↻</span> Swap</button>
+        </label>
+        <p style="font-size: 0.75rem; color: var(--text-secondary); margin: 0 0 0.5rem 0; line-height: 1.4;">The paper size your printer prints on (ask your printer if you're not sure).</p>
+        <select id="sheet-preset">
+          <option value="13,19" selected>13 × 19 (Super B)</option>
+          <option value="12.6,17.7">12.6 × 17.7 (SRA3)</option>
+          <option value="8.8,12.6">8.8 × 12.6 (SRA4)</option>
+          <option value="19.7,27.8">19.7 × 27.8 (B2)</option>
+          <option value="12,18">12 × 18 (Arch B)</option>
+          <option value="8.5,11">8.5 × 11 (Letter)</option>
+          <option value="8.27,11.69">8.27 × 11.69 (A4)</option>
+          <option value="11.69,16.54">11.69 × 16.54 (A3)</option>
+          <option value="custom">Custom Size...</option>
+        </select>
+      </div>
+      <div class="row" id="sheet-custom-row" style="display: none; margin-bottom: 1.25rem;">
+        <div class="field"><label for="sw">Sheet W</label><input type="number" id="sw" value="13" step="0.5" min="1"></div>
+        <div class="field"><label for="sh">Sheet H</label><input type="number" id="sh" value="19" step="0.5" min="1"></div>
+      </div>
+
+      <details class="card details-card" style="margin-top: 1rem;">
+        <summary style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-3); display: flex; justify-content: space-between; align-items: center; width: 100%;">
+          <span>Fine-Tune & Scale (Optional)</span>
+        </summary>
+        <div class="details-content" style="margin-top: 1rem;">
+          <div class="slider-wrap">
+            <div class="slider-top">
+              <label for="scale-slider" style="font-size:0.85rem; font-weight:600; color:var(--text);">Tweak Size (Scale)</label>
+              <span class="val" id="slider-val">100%</span>
+            </div>
+            <input type="range" id="scale-slider" min="10" max="100" value="100" step="1">
+            <div class="slider-ends">
+              <span>Smaller → More Yield</span>
+              <span>Full Size</span>
+            </div>
+          </div>
+          <div class="field" style="margin-top:0.75rem; margin-bottom: 0;">
+            <select id="scale-mode">
+              <option value="aspect">Scale Both (Keep Aspect Ratio)</option>
+              <option value="lock-w">Lock Width — Vary Height</option>
+              <option value="lock-h">Lock Height — Vary Width</option>
+            </select>
+          </div>
+
+          <div style="margin-top: 1.25rem;">
+            <p style="font-size:0.75rem; color:var(--text-3); margin-bottom:0.5rem; font-weight: 500;">Exact Dimensions (Override)</p>
+            <div class="row">
+              <div class="field">
+                <label for="cust-w">Width</label>
+                <input type="number" id="cust-w" step="0.1" min="0.5" placeholder="Auto">
+              </div>
+              <div class="field">
+                <label for="cust-h">Height</label>
+                <input type="number" id="cust-h" step="0.1" min="0.5" placeholder="Auto">
+              </div>
+            </div>
+            <div class="warn" id="warn">⚠️ Sticker exceeds Package in both orientations!</div>
+          </div>
+        </div>
+      </details>
+    </div>
 
     <!-- Suggested Sizes (Collapsible Accordion) -->
-    <details class="card details-card" id="suggested-card">
-      <summary>Suggested Sizes</summary>
+    <details class="card details-card" id="suggested-card" style="margin-top: 1rem;">
+      <summary>Sticker sizes that fit your Package</summary>
       <div class="details-content">
         <div class="cands" id="cands"></div>
         <p class="eff-help" style="margin-top:0.6rem; border-top: none; padding-top: 0; line-height: 1.35;">
@@ -670,53 +1068,25 @@
       </div>
     </details>
 
-    <!-- Sheet & Cover -->
-    <details class="card details-card" open>
-      <summary>Sheet & Cover Size (in)</summary>
-      <div class="details-content">
-        <!-- Sheet Size Selection -->
-        <div class="field" style="margin-bottom: 0.75rem;">
-          <label for="sheet-preset">Sheet Size</label>
-          <select id="sheet-preset">
-            <option value="13,19" selected>13 × 19 (Super B)</option>
-            <option value="12.6,17.7">12.6 × 17.7 (SRA3)</option>
-            <option value="8.8,12.6">8.8 × 12.6 (SRA4)</option>
-            <option value="19.7,27.8">19.7 × 27.8 (B2)</option>
-            <option value="12,18">12 × 18 (Arch B)</option>
-            <option value="8.5,11">8.5 × 11 (Letter)</option>
-            <option value="8.27,11.69">8.27 × 11.69 (A4)</option>
-            <option value="11.69,16.54">11.69 × 16.54 (A3)</option>
-            <option value="custom">Custom Size...</option>
-          </select>
-        </div>
-        <div class="row" id="sheet-custom-row" style="display: none; margin-bottom: 1.25rem;">
-          <div class="field"><label for="sw">Sheet W</label><input type="number" id="sw" value="13" step="0.5" min="1"></div>
-          <div class="field"><label for="sh">Sheet H</label><input type="number" id="sh" value="19" step="0.5" min="1"></div>
-        </div>
-
-        <!-- Cover/Sticker Size Selection -->
-        <div class="field" style="margin-bottom: 0.75rem;">
-          <label for="cover-preset">Target Sticker Size (Max Area)</label>
-          <select id="cover-preset">
-            <option value="10.5,9" selected>10.5 × 9 (Custom/Package)</option>
-            <option value="2,2">2 × 2</option>
-            <option value="3,3">3 × 3</option>
-            <option value="4,4">4 × 4</option>
-            <option value="4,6">4 × 6</option>
-            <option value="5,7">5 × 7</option>
-            <option value="custom">Custom Size...</option>
-          </select>
-        </div>
-        <div class="row" id="cover-custom-row" style="display: none;">
-          <div class="field"><label for="cw">Width</label><input type="number" id="cw" value="10.5" step="0.5" min="0.5"></div>
-          <div class="field"><label for="ch">Height</label><input type="number" id="ch" value="9" step="0.5" min="0.5"></div>
-        </div>
+    <h2 class="step-header" style="margin-top: 1.5rem;">Step 2: Artwork (Optional)</h2>
+    <!-- Image Upload -->
+    <div class="card" style="border: none; padding: 0.5rem 0 0 0; box-shadow: none; background: transparent;">
+      <div class="upload" id="upload-zone">
+        <div class="ico">🖼️</div>
+        <div class="txt">Click or drag to upload sticker artwork</div>
+        <div class="fname" id="fname"></div>
+        <input type="file" id="art-file" accept="image/*">
       </div>
-    </details>
+      <button class="btn-rm" id="btn-rm">Remove Image</button>
+      <div style="text-align: center; margin-top: 0.75rem; font-size: 0.7rem; color: var(--emerald); font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.35rem;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+        100% Private. Processed locally.
+      </div>
+    </div>
 
     <!-- Print Constraints -->
-    <details class="card details-card">
-      <summary>Print Constraints (in)</summary>
+    <details class="card details-card" style="margin-top: 1.5rem;">
+      <summary>Advanced: Print Constraints</summary>
       <div class="details-content">
         <div class="row">
           <div class="field">
@@ -742,18 +1112,6 @@
       </div>
     </details>
 
-    <!-- Image Upload -->
-    <div class="card">
-      <h2>Artwork Preview</h2>
-      <div class="upload" id="upload-zone">
-        <div class="ico">🖼️</div>
-        <div class="txt">Click or drag to upload sticker artwork</div>
-        <div class="fname" id="fname"></div>
-        <input type="file" id="art-file" accept="image/*">
-      </div>
-      <button class="btn-rm" id="btn-rm">Remove Image</button>
-    </div>
-
   </aside>
 
   <!-- ─── Workspace ─── -->
@@ -769,14 +1127,50 @@
       <div class="stat s-cost" id="card-sheets"><div class="lbl">Sheets Needed</div><div class="num" id="st-sheets">—</div></div>
     </div>
 
-    <!-- Order Planning (Phase 2) -->
-    <details class="card details-card" style="margin-top: 1rem; margin-bottom: 1.5rem; background: var(--surface-1);">
-      <summary style="font-size: 1rem; font-weight: 600; padding: 1rem;">Order Planning (Optional)</summary>
-      <div class="details-content" style="padding: 1rem; padding-top: 0;">
-        <p style="font-size:0.8rem; color:var(--text-3); margin-bottom:1rem;">
+
+    <!-- Error Banner -->
+    <div id="main-error" class="warn" style="display: none;">
+      ⚠️ <strong id="main-error-msg">Sheet size is too small for these margins!</strong>
+    </div>
+
+    <!-- Smart Optimization logic now uses a tooltip (HTML removed from workspace) -->
+
+    <div class="panels-header-bar">
+      <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.06em;">Visual Previews</div>
+      <div class="view-toggles">
+        <button type="button" class="view-toggle-btn active" data-view="split" id="btn-view-split">Split View</button>
+        <button type="button" class="view-toggle-btn" data-view="sheet" id="btn-view-sheet">Sheet Only</button>
+        <button type="button" class="view-toggle-btn" data-view="cover" id="btn-view-cover">Package Only</button>
+      </div>
+    </div>
+    <div class="panels view-5050" id="main-panels">
+      <div class="panel">
+        <div class="panel-top">
+          <h3>Sheet Layout</h3>
+          <span class="sub">To-scale · Margin (red) · Bleed (blue dashed) · Trim (solid)</span>
+        </div>
+        <div class="panel-canvas" id="pc-sheet"><canvas id="cv-sheet"></canvas></div>
+        <div style="margin-top: auto; padding: 1rem 1.25rem; display: flex; gap: 0.75rem; border-top: 1px solid var(--border); background: rgba(255,255,255,0.01); justify-content: flex-start;">
+          <button type="button" id="btn-export-pdf">⬇ Export PDF</button>
+          <button type="button" id="btn-export-png">⬇ Export PNG</button>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-top alt">
+          <h3>Package Preview</h3>
+          <span class="sub">Sticker on package, to scale</span>
+        </div>
+        <div class="panel-canvas" id="pc-cover"><canvas id="cv-cover"></canvas></div>
+      </div>
+    </div>
+
+    <section id="order-planning-section" class="card">
+      <h2>Cost & Sheets Calculator</h2>
+      <div class="card-content">
+        <p class="section-desc">
           Enter your target quantity and optional pricing to calculate total sheets needed, total cost, and waste.
         </p>
-        <div class="row" style="margin-bottom: 1rem;">
+        <div class="row">
           <div class="field">
             <label for="order-qty">Target Order Quantity</label>
             <input type="number" id="order-qty" step="1" min="1" placeholder="e.g. 500">
@@ -792,7 +1186,7 @@
         </div>
         
         <!-- Order Summary -->
-        <div class="order-summary" id="order-summary" style="margin-top: 1rem;">
+        <div class="order-summary" id="order-summary">
           <div class="os-main">
             <div class="os-title">📦 Order Summary</div>
             <div class="os-primary" id="os-primary">—</div>
@@ -803,54 +1197,88 @@
           </div>
         </div>
       </div>
-    </details>
+    </section>
 
-    <!-- Error Banner -->
-    <div id="main-error" class="warn" style="display: none; margin-bottom: 1.5rem; padding: 1rem; border: 1px solid #FF453A; border-radius: 8px; background: rgba(255,69,58,0.05); color: #FF453A;">
-      ⚠️ <strong id="main-error-msg">Sheet size is too small for these margins!</strong>
+  </div> <!-- /app -->
+
+<section class="docs-section" style="max-width: 1440px; margin: 3rem auto 5rem; padding: 0 1.25rem;">
+  <!-- Section 1: How It Works -->
+  <div style="margin-bottom: 3.5rem;">
+    <div style="margin-bottom: 1.25rem;">
+      <h2 style="font-size: 1.35rem; font-weight: 700; color: #fff; letter-spacing: -0.02em; margin-bottom: 0.25rem;">How It Works</h2>
+      <p style="color: var(--text-secondary); font-size: 0.9rem;">Three simple steps to optimize your print layout and calculate maximum yield.</p>
     </div>
-
-    <!-- Previews -->
-    <div class="panels" id="preview-panels">
-      <div class="panel">
-        <div class="panel-top">
-          <h3>Sheet Layout</h3>
-          <span class="sub">To-scale · Margin (red) · Bleed (blue dashed) · Trim (solid)</span>
-        </div>
-        <div class="panel-canvas" id="pc-sheet"><canvas id="cv-sheet"></canvas></div>
-        <div style="margin-top: 0.75rem; text-align: center; display: flex; gap: 0.5rem; justify-content: center;">
-          <button type="button" class="btn-reset" id="btn-export-pdf" style="margin: 0; background: var(--blue); color: #fff; border: none; padding: 0.5rem 1rem;">⬇ Export PDF</button>
-          <button type="button" class="btn-reset" id="btn-export-png" style="margin: 0; background: var(--surface-3); color: var(--text); border: 1px solid var(--border); padding: 0.5rem 1rem;">⬇ Export PNG</button>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.25rem;">
+      <div style="background: var(--surface-1); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; display: flex; gap: 1rem; align-items: flex-start;">
+        <span style="background: var(--surface-3); color: var(--blue); width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; flex-shrink: 0; border: 1px solid var(--border);">1</span>
+        <div>
+          <h3 style="font-size: 0.95rem; font-weight: 600; color: #fff; margin-bottom: 0.35rem;">Input Dimensions</h3>
+          <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5; margin: 0;">Set your physical Package size (the box or pouch) and your printer's Sheet size.</p>
         </div>
       </div>
-      <div class="panel">
-        <div class="panel-top alt">
-          <h3>Cover Mockup</h3>
-          <span class="sub">Sticker on cover, to scale</span>
+
+      <div style="background: var(--surface-1); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; display: flex; gap: 1rem; align-items: flex-start;">
+        <span style="background: var(--surface-3); color: var(--blue); width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; flex-shrink: 0; border: 1px solid var(--border);">2</span>
+        <div>
+          <h3 style="font-size: 0.95rem; font-weight: 600; color: #fff; margin-bottom: 0.35rem;">Configure Constraints</h3>
+          <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5; margin: 0;">Specify bleed area, cut gaps, sheet margins, and press gripper edges.</p>
         </div>
-        <div class="panel-canvas" id="pc-cover"><canvas id="cv-cover"></canvas></div>
+      </div>
+
+      <div style="background: var(--surface-1); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; display: flex; gap: 1rem; align-items: flex-start;">
+        <span style="background: var(--surface-3); color: var(--blue); width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; flex-shrink: 0; border: 1px solid var(--border);">3</span>
+        <div>
+          <h3 style="font-size: 0.95rem; font-weight: 600; color: #fff; margin-bottom: 0.35rem;">Review & Export</h3>
+          <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5; margin: 0;">Compare yield suggestions, view to-scale previews, and export PDF/PNGs.</p>
+        </div>
       </div>
     </div>
+  </div>
 
-  </main>
-</div>
+  <!-- Section 2: Key Print Terminology -->
+  <div>
+    <div style="margin-bottom: 1.25rem;">
+      <h2 style="font-size: 1.35rem; font-weight: 700; color: #fff; letter-spacing: -0.02em; margin-bottom: 0.25rem;">Print Terminology Guide</h2>
+      <p style="color: var(--text-secondary); font-size: 0.9rem;">Key concepts used in prepress and layout optimization.</p>
+    </div>
 
-<section class="docs-section">
-  <h2>How this Calculator Works</h2>
-  <p>This tool helps you figure out exactly how many stickers or labels you can fit on a single printed sheet, taking into account the physical constraints of commercial or home printing.</p>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem;">
+      <div style="background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem;">
+        <h3 style="font-size: 0.85rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Print Bleed</h3>
+        <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5; margin: 0;">Artwork extended past the cut line (typically 0.0625" or 0.125"). Prevents unprinted white slivers if cutting fluctuates.</p>
+      </div>
 
-  <h3>What is Print Bleed?</h3>
-  <p>Bleed is the extra artwork printed beyond your final cut line. Because cutting machines (like a guillotine cutter or a Cricut) are rarely 100% perfect, having a little extra color ensures you don't end up with a tiny white sliver on the edge of your sticker. A standard commercial bleed is 0.0625" or 0.125" per side.</p>
+      <div style="background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem;">
+        <h3 style="font-size: 0.85rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Cut Gap (Gutter)</h3>
+        <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5; margin: 0;">Space between adjacent cut boundaries. Adjacent bleeds overlap safely in this gap without wasting sheet real estate.</p>
+      </div>
 
-  <h3>What is the Gap (or Gutter)?</h3>
-  <p>The gap is the physical white space left between the cut lines of adjacent stickers. The cutting blade needs a safe path to travel through without ruining the sticker next to it. Our calculator ensures that the bleeds from adjacent stickers safely overlap inside this gap without wasting extra space.</p>
+      <div style="background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem;">
+        <h3 style="font-size: 0.85rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Gripper Edge</h3>
+        <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5; margin: 0;">Mechanical lead-edge margin (0.4" to 0.6") required by commercial sheet presses. Set to 0 for home cutters or Cricut.</p>
+      </div>
 
-  <h3>What is the Gripper Edge?</h3>
-  <p>Commercial sheet-fed printing presses use mechanical "fingers" to grab the paper and pull it through the machine. These fingers cover about 0.5" of the leading edge of the paper, meaning the printer cannot print there. <strong>If you are using a home cutting machine (like a Silhouette or Cricut) or a roll-fed printer, you should set this to 0.</strong></p>
-
-  <h3>How is Efficiency Calculated?</h3>
-  <p>Efficiency tells you how much of the paper you are actually using. It is calculated by taking the pure trim area of the stickers (width × height) multiplied by the total number of stickers, divided by the total area of the sheet. The bleed area and margins are considered waste.</p>
+      <div style="background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem;">
+        <h3 style="font-size: 0.85rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Efficiency %</h3>
+        <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5; margin: 0;">Percentage of total sheet area occupied by final trimmed stickers. Excludes bleed and margin waste.</p>
+      </div>
+    </div>
+  </div>
 </section>
+
+<footer>
+  <nav>
+    <a href="./index.html">Home</a>
+    <a href="./blog/index.html">Blog & Resources</a>
+    <a href="./privacy.html">Privacy Policy</a>
+    <a href="./terms.html">Terms of Service</a>
+    <a href="./contact.html">Contact Us</a>
+  </nav>
+  <p>&copy; 2026 Sasank Tools. All rights reserved.</p>
+</footer>
+</div> <!-- /app-layer -->
+
 <script>
 const $ = id => document.getElementById(id);
 const D = {
@@ -862,17 +1290,19 @@ const D = {
   slider: $('scale-slider'), sliderVal: $('slider-val'), scaleMode: $('scale-mode'),
   sheetPrice: $('sheet-price'), packQty: $('pack-qty'), orderQty: $('order-qty'),
   artFile: $('art-file'), fname: $('fname'), btnRm: $('btn-rm'), uploadZone: $('upload-zone'),
-  cands: $('cands'), btnReset: $('btn-reset'), btnClearData: $('btn-clear-data'),
+  cands: $('cands'), btnReset: $('btn-reset-all'),
   stSize: $('st-size'), stCount: $('st-count'), stEff: $('st-eff'), stGrid: $('st-grid'),
   cardCost: $('card-cost'), cardSheets: $('card-sheets'), stCost: $('st-cost'), stSheets: $('st-sheets'),
   orderSummary: $('order-summary'), osPrimary: $('os-primary'), osWaste: $('os-waste'), osDetails: $('os-details'),
   cvSheet: $('cv-sheet'), cvCover: $('cv-cover'),
   pcSheet: $('pc-sheet'), pcCover: $('pc-cover'),
+  optBulb: $('opt-bulb'), btnSwapSheet: $('btn-swap-sheet'), btnSwapCover: $('btn-swap-cover')
 };
 
 let STATE = {
   img: null, candidates: [], activeLayout: null, activeW: 0, activeH: 0,
 };
+let tipApplied = false;
 
 function getParams() {
   return {
@@ -1174,7 +1604,7 @@ function resolveActive() {
   } else {
     const fitsCover = (finalW <= p.CW && finalH <= p.CH) || (finalW <= p.CH && finalH <= p.CW);
     if (!fitsCover) {
-      D.warn.textContent = '⚠️ Sticker exceeds Cover in both orientations!';
+      D.warn.textContent = '⚠️ Sticker exceeds Package in both orientations!';
       D.warn.style.display = 'flex';
     } else {
       D.warn.style.display = 'none';
@@ -1193,7 +1623,7 @@ function updateAll() {
   const p = getParams();
   const errorEl = $('main-error');
   const errorMsg = $('main-error-msg');
-  const panels = $('preview-panels');
+  const panels = $('main-panels');
 
   function showError(msg) {
     errorMsg.textContent = msg;
@@ -1209,7 +1639,7 @@ function updateAll() {
     return showError("Please enter valid numeric sheet dimensions greater than 0.");
   }
   if (p.CW <= 0 || p.CH <= 0 || isNaN(p.CW) || isNaN(p.CH)) {
-    return showError("Please enter valid numeric cover dimensions greater than 0.");
+    return showError("Please enter valid numeric package dimensions greater than 0.");
   }
   
   const effectiveGripper = Math.max(p.margin, p.gripper);
@@ -1229,6 +1659,7 @@ function updateAll() {
   renderCandidates();
   updateStats();
   updateCostStats();
+  checkOptimizations();
   drawSheet();
   drawCover();
   saveToLocalStorage();
@@ -1278,6 +1709,9 @@ function loadFromLocalStorage() {
   if (state.gripper !== undefined) D.gripper.value = state.gripper;
 
   syncPresetsUI();
+  
+  const savedViewMode = localStorage.getItem('sic_view_mode') || 'split';
+  switchViewMode(savedViewMode, false);
 }
 
 function syncPresetsUI() {
@@ -1421,6 +1855,81 @@ function updateCostStats() {
 }
 
 // ════════════════════════════════════════════════════════════════
+// Smart Optimization Logic (Tooltip version)
+// ════════════════════════════════════════════════════════════════
+function checkOptimizations() {
+  D.optBulb.style.display = 'none';
+  if (!STATE.activeLayout || STATE.activeLayout.count === 0) return;
+  if (D.scaleMode.value !== 'aspect') return;
+
+  const p = getParams();
+  const baseW = STATE.activeW;
+  const baseH = STATE.activeH;
+  const baseYield = STATE.activeLayout.count;
+  const baseEff = STATE.activeLayout.eff;
+  
+  let bestOpt = null;
+
+  const steps = [];
+  for (let s = 0.99; s >= 0.85; s -= 0.01) steps.push(s);
+  for (let s = 1.01; s <= 1.15; s += 0.01) steps.push(s);
+
+  for (const scale of steps) {
+    let testW = baseW * scale;
+    let testH = baseH * scale;
+    testW = Math.round(testW * 100) / 100;
+    testH = Math.round(testH * 100) / 100;
+    
+    const effGripper = Math.max(p.margin, p.gripper);
+    const maxW = p.SW - 2 * p.margin;
+    const maxH = p.SH - p.margin - effGripper;
+    if (testW > maxW || testH > maxH) continue;
+    
+    const layout = computeLayout(testW, testH, p);
+    if (!layout || layout.count === 0) continue;
+
+    if (scale < 1.0) {
+      if (layout.count > baseYield) {
+        if (!bestOpt || layout.count > bestOpt.count || (layout.count === bestOpt.count && scale > bestOpt.scale)) {
+          bestOpt = { type: 'shrink', scale, w: testW, h: testH, count: layout.count, eff: layout.eff };
+        }
+      }
+    } else {
+      if (layout.count === baseYield && layout.eff > baseEff) {
+         if (!bestOpt || layout.eff > bestOpt.eff) {
+           bestOpt = { type: 'grow', scale, w: testW, h: testH, count: layout.count, eff: layout.eff };
+         }
+      }
+    }
+  }
+
+  // Prevent infinite loops by not showing optimization if we are already at an optimized state
+  if (bestOpt && !tipApplied) {
+    let msg = '';
+    if (bestOpt.type === 'shrink') {
+      msg = `Yield Tip: Shrink size slightly to ${bestOpt.w.toFixed(2)}" × ${bestOpt.h.toFixed(2)}" to fit +${bestOpt.count - baseYield} stickers. (Click to Apply)`;
+    } else {
+      msg = `Waste Tip: Grow size to ${bestOpt.w.toFixed(2)}" × ${bestOpt.h.toFixed(2)}" to increase efficiency to ${bestOpt.eff.toFixed(1)}% (same yield). (Click to Apply)`;
+    }
+    D.optBulb.dataset.t = msg;
+    D.optBulb.style.display = 'inline-block';
+    
+    D.optBulb.onclick = () => {
+      tipApplied = true;
+      D.coverPreset.value = 'custom';
+      D.coverCustomRow.style.display = 'flex';
+      D.cw.value = bestOpt.w;
+      D.ch.value = bestOpt.h;
+      D.slider.value = 100;
+      D.sliderVal.textContent = '100%';
+      updateAll();
+    };
+  } else {
+    D.optBulb.style.display = 'none';
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
 // Canvas drawing — Sheet Preview
 // ════════════════════════════════════════════════════════════════
 function drawSheet() {
@@ -1555,7 +2064,7 @@ function drawCover() {
   // Cover label
   ctx.fillStyle = 'rgba(235,235,245,0.4)';
   ctx.font = '11px -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif';
-  ctx.fillText(`Cover ${p.CW}" × ${p.CH}"`, ox + 8, oy + 16);
+  ctx.fillText(`Package ${p.CW}" × ${p.CH}"`, ox + 8, oy + 16);
 
   // Sticker on cover
   let sw = STATE.activeW;
@@ -1718,6 +2227,16 @@ D.artFile.addEventListener('change', e => {
   }
 });
 
+// Remove Image
+D.btnRm.addEventListener('click', () => {
+  STATE.img = null;
+  D.artFile.value = '';
+  D.fname.textContent = '';
+  D.btnRm.style.display = 'none';
+  drawSheet();
+  drawCover();
+});
+
 // Drag & Drop
 if (D.uploadZone) {
   ['dragenter', 'dragover'].forEach(evt => {
@@ -1742,40 +2261,27 @@ if (D.uploadZone) {
   }, false);
 }
 
-// Clear data
-if (D.btnClearData) {
-  D.btnClearData.addEventListener('click', () => {
-    if(confirm("Are you sure you want to clear all saved settings?")) {
-      localStorage.removeItem('stickerCalcState');
-      window.history.replaceState(null, '', window.location.pathname);
-      window.location.reload();
-    }
-  });
-}
 
-// Reset defaults
+
+// Reset to defaults (Inline confirm)
 if (D.btnReset) {
+  let clearConfirm = false;
+  let clearTimer = null;
   D.btnReset.addEventListener('click', () => {
-    D.sheetPreset.value = '13,19';
-    D.coverPreset.value = '10.5,9';
-    D.sw.value = '13';
-    D.sh.value = '19';
-    D.cw.value = '10.5';
-    D.ch.value = '9';
-    D.bleed.value = '0.0625';
-    D.gap.value = '0.125';
-    D.margin.value = '0.2';
-    D.gripper.value = '0';
-    D.custW.value = '';
-    D.custH.value = '';
-    D.sheetPrice.value = '';
-    D.packQty.value = '1';
-    D.orderQty.value = '';
-    D.slider.value = '100';
-    D.sliderVal.textContent = '100%';
-    D.scaleMode.value = 'aspect';
-    syncPresetsUI();
-    updateAll();
+    if (!clearConfirm) {
+      clearConfirm = true;
+      D.btnReset.textContent = "Are you sure? Click again";
+      clearTimer = setTimeout(() => {
+        clearConfirm = false;
+        D.btnReset.textContent = "Reset Calculator";
+      }, 3000);
+    } else {
+      clearTimeout(clearTimer);
+      localStorage.removeItem('stickerCalcState');
+      localStorage.removeItem('sic_view_mode');
+      window.history.replaceState({}, document.title, window.location.pathname);
+      location.reload();
+    }
   });
 }
 
@@ -1783,7 +2289,7 @@ if (D.btnReset) {
 window.addEventListener('resize', () => { drawSheet(); drawCover(); });
 
 // Generate High-Res Image for PDF
-function generateHighResSheetImage(dpi) {
+function generateHighResSheetImage(dpi = 300, format = 'image/jpeg') {
   const p = getParams();
   const layout = STATE.activeLayout;
   if (!layout || layout.count === 0) return null;
@@ -1836,7 +2342,7 @@ function generateHighResSheetImage(dpi) {
     ctx.strokeRect(x, y, w, h);
   });
   
-  return canvas.toDataURL('image/jpeg', 0.95);
+  return canvas.toDataURL(format, 0.95);
 }
 
 // PDF Export
@@ -1863,15 +2369,96 @@ if (btnExportPdf) {
   });
 }
 
-// Clear Saved Data
-const btnClearData = $('btn-clear-data');
-if (btnClearData) {
-  btnClearData.addEventListener('click', () => {
-    if (confirm("Are you sure you want to clear all saved settings? This cannot be undone.")) {
-      localStorage.removeItem('stickerCalcState');
-      location.reload();
+// PNG Export
+const btnExportPng = $('btn-export-png');
+if (btnExportPng) {
+  btnExportPng.addEventListener('click', () => {
+    const sw = +D.sw.value || 13;
+    const sh = +D.sh.value || 19;
+    const imgData = generateHighResSheetImage(300, 'image/png');
+    if (!imgData) return;
+    
+    const link = document.createElement('a');
+    link.download = `StickerLayout_${sw}x${sh}.png`;
+    link.href = imgData;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  });
+}
+
+// Swap orientation buttons
+if (D.btnSwapSheet) {
+  D.btnSwapSheet.addEventListener('click', () => {
+    tipApplied = false;
+    const tmp = D.sw.value;
+    D.sw.value = D.sh.value;
+    D.sh.value = tmp;
+    updateAll();
+  });
+}
+if (D.btnSwapCover) {
+  D.btnSwapCover.addEventListener('click', () => {
+    tipApplied = false;
+    const tmp = D.cw.value;
+    D.cw.value = D.ch.value;
+    D.ch.value = tmp;
+    D.slider.value = 100;
+    D.sliderVal.textContent = '100%';
+    updateAll();
+  });
+}
+
+// ════════════════════════════════════════════════════════════════
+// View Layout Toggles Logic
+// ════════════════════════════════════════════════════════════════
+const mainPanels = $('main-panels');
+const viewButtons = {
+  split: $('btn-view-split'),
+  sheet: $('btn-view-sheet'),
+  cover: $('btn-view-cover')
+};
+
+function switchViewMode(mode, save = true) {
+  Object.keys(viewButtons).forEach(k => {
+    if (viewButtons[k]) {
+      if (k === mode) {
+        viewButtons[k].classList.add('active');
+      } else {
+        viewButtons[k].classList.remove('active');
+      }
     }
   });
+
+  if (mainPanels) {
+    mainPanels.className = 'panels';
+    if (mode === 'split') mainPanels.classList.add('view-5050');
+    else if (mode === 'sheet') mainPanels.classList.add('view-sheet');
+    else if (mode === 'cover') mainPanels.classList.add('view-cover');
+  }
+
+  drawSheet();
+  drawCover();
+
+  if (save) {
+    localStorage.setItem('sic_view_mode', mode);
+  }
+}
+
+Object.keys(viewButtons).forEach(mode => {
+  if (viewButtons[mode]) {
+    viewButtons[mode].addEventListener('click', () => {
+      switchViewMode(mode);
+    });
+  }
+});
+
+// Reset suggestion on any manual input/change within sidebar or cost calculator
+document.querySelector('.sidebar').addEventListener('input', () => { tipApplied = false; });
+document.querySelector('.sidebar').addEventListener('change', () => { tipApplied = false; });
+if (document.querySelector('#order-planning-section')) {
+  document.querySelector('#order-planning-section').addEventListener('input', () => { tipApplied = false; });
+  document.querySelector('#order-planning-section').addEventListener('change', () => { tipApplied = false; });
 }
 
 // ════════════════════════════════════════════════════════════════
