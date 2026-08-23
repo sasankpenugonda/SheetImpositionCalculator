@@ -130,7 +130,6 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     html {
-      scroll-snap-type: y proximity;
       scroll-behavior: smooth;
     }
 
@@ -951,7 +950,7 @@
     <button type="button" class="btn-reset" id="btn-reset-all">Reset Calculator</button>
   </header>
 
-<section class="hero" style="max-width: 1200px; margin: 0 auto; text-align: center; padding: 10vh 1.25rem 25vh; position: sticky; top: 51px; z-index: 1; scroll-snap-align: start; min-height: 80vh; display: flex; flex-direction: column; justify-content: center;">
+<section class="hero" style="max-width: 1200px; margin: 0 auto; text-align: center; padding: 10vh 1.25rem 25vh; position: sticky; top: 51px; z-index: 1; min-height: 80vh; display: flex; flex-direction: column; justify-content: center;">
   <h2 style="font-size: 3.2rem; font-weight: 800; line-height: 1.15; margin-bottom: 1.5rem; color: #ffffff; letter-spacing: -0.03em;">
     Find the right sticker size for your product — and how many you get per sheet.
   </h2>
@@ -960,7 +959,7 @@
   </p>
 </section>
 
-<div class="app-layer" style="position: relative; z-index: 10; background: var(--bg); padding-top: 1.5rem; scroll-snap-align: start; border-top: 1px solid rgba(255,255,255,0.05); box-shadow: 0 -20px 40px rgba(0,0,0,0.5);">
+<div class="app-layer" style="position: relative; z-index: 10; background: var(--bg); padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); box-shadow: 0 -20px 40px rgba(0,0,0,0.5);">
   <div class="app">
   <!-- ─── Sidebar ─── -->
   <aside class="sidebar">
@@ -1014,59 +1013,90 @@
         <div class="field"><label for="sw">Sheet W</label><input type="number" id="sw" value="13" step="0.5" min="1"></div>
         <div class="field"><label for="sh">Sheet H</label><input type="number" id="sh" value="19" step="0.5" min="1"></div>
       </div>
+    </div> <!-- Close Step 1 Dimensions Card -->
 
-      <details class="card details-card" style="margin-top: 1rem;">
-        <summary style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-3); display: flex; justify-content: space-between; align-items: center; width: 100%;">
-          <span>Fine-Tune & Scale (Optional)</span>
-        </summary>
-        <div class="details-content" style="margin-top: 1rem;">
-          <div class="slider-wrap">
-            <div class="slider-top">
-              <label for="scale-slider" style="font-size:0.85rem; font-weight:600; color:var(--text);">Tweak Size (Scale)</label>
-              <span class="val" id="slider-val">100%</span>
-            </div>
-            <input type="range" id="scale-slider" min="10" max="100" value="100" step="1">
-            <div class="slider-ends">
-              <span>Smaller → More Yield</span>
-              <span>Full Size</span>
-            </div>
-          </div>
-          <div class="field" style="margin-top:0.75rem; margin-bottom: 0;">
-            <select id="scale-mode">
-              <option value="aspect">Scale Both (Keep Aspect Ratio)</option>
-              <option value="lock-w">Lock Width — Vary Height</option>
-              <option value="lock-h">Lock Height — Vary Width</option>
-            </select>
-          </div>
+    <h2 class="step-header" style="margin-top: 1.5rem;">Choose Your Sticker Size</h2>
+    <div class="card" style="border: none; padding: 0.5rem 0 0 0; box-shadow: none; background: transparent;">
+      
+      <!-- Segmented Control for Modes -->
+      <div style="display: flex; gap: 0.25rem; background: var(--surface-1); padding: 0.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); margin-bottom: 1rem;">
+        <button type="button" class="view-toggle-btn active" id="btn-mode-smart" style="flex: 1; justify-content: center;">Smart Suggestions</button>
+        <button type="button" class="view-toggle-btn" id="btn-mode-custom" style="flex: 1; justify-content: center;">Set My Own</button>
+      </div>
 
-          <div style="margin-top: 1.25rem;">
-            <p style="font-size:0.75rem; color:var(--text-3); margin-bottom:0.5rem; font-weight: 500;">Exact Dimensions (Override)</p>
-            <div class="row">
-              <div class="field">
-                <label for="cust-w">Width</label>
-                <input type="number" id="cust-w" step="0.1" min="0.5" placeholder="Auto">
-              </div>
-              <div class="field">
-                <label for="cust-h">Height</label>
-                <input type="number" id="cust-h" step="0.1" min="0.5" placeholder="Auto">
-              </div>
-            </div>
-            <div class="warn" id="warn">⚠️ Sticker exceeds Package in both orientations!</div>
-          </div>
-        </div>
-      </details>
-    </div>
-
-    <!-- Suggested Sizes (Collapsible Accordion) -->
-    <details class="card details-card" id="suggested-card" style="margin-top: 1rem;">
-      <summary>Sticker sizes that fit your Package</summary>
-      <div class="details-content">
+      <!-- Mode 1: Smart Suggestions -->
+      <div id="mode-smart-suggestions">
         <div class="cands" id="cands"></div>
-        <p class="eff-help" style="margin-top:0.6rem; border-top: none; padding-top: 0; line-height: 1.35;">
+        <p class="eff-help" style="margin-top:0.6rem; border-top: none; padding-top: 0; line-height: 1.35; font-size: 0.75rem; color: var(--text-secondary);">
           Click a layout to apply it. <strong>Efficiency %</strong> is the usable sticker area on the sheet.
         </p>
       </div>
-    </details>
+
+      <!-- Mode 2: Set My Own -->
+      <div id="mode-set-my-own" style="display: none; padding: 1rem; background: var(--surface-2); border-radius: var(--radius-lg); border: 1px solid var(--border);">
+        <div class="slider-wrap">
+          <div class="slider-top">
+            <label for="scale-slider" style="font-size:0.85rem; font-weight:600; color:var(--text);">Tweak Size (Scale)</label>
+            <span class="val" id="slider-val">100%</span>
+          </div>
+          <input type="range" id="scale-slider" min="10" max="100" value="100" step="1">
+          <div class="slider-ends">
+            <span>Smaller → More Yield</span>
+            <span>Full Size</span>
+          </div>
+        </div>
+        <div class="field" style="margin-top:0.75rem; margin-bottom: 0;">
+          <select id="scale-mode">
+            <option value="aspect">Scale Both (Keep Aspect Ratio)</option>
+            <option value="lock-w">Lock Width — Vary Height</option>
+            <option value="lock-h">Lock Height — Vary Width</option>
+          </select>
+        </div>
+
+        <div style="margin-top: 1.25rem;">
+          <p style="font-size:0.75rem; color:var(--text-3); margin-bottom:0.5rem; font-weight: 500;">Exact Dimensions (Override)</p>
+          <div class="row">
+            <div class="field">
+              <label for="cust-w">Width</label>
+              <input type="number" id="cust-w" step="0.1" min="0.5" placeholder="Auto">
+            </div>
+            <div class="field">
+              <label for="cust-h">Height</label>
+              <input type="number" id="cust-h" step="0.1" min="0.5" placeholder="Auto">
+            </div>
+          </div>
+          <div class="warn" id="warn" style="display: none;">⚠️ Sticker exceeds Package in both orientations!</div>
+        </div>
+      </div>
+
+      <!-- Collapsed Print Settings -->
+      <details class="card details-card" style="margin-top: 1.25rem; background: var(--surface-2);">
+        <summary>Print Settings</summary>
+        <div class="details-content">
+          <div class="row">
+            <div class="field">
+              <label for="bleed">Bleed <span class="tip" tabindex="0" role="tooltip" data-t="Extra area printed beyond the cut line to avoid white edges if cutting is slightly off. Added on every side of each sticker.">i</span></label>
+              <input type="number" id="bleed" value="0.0625" step="0.005" min="0">
+            </div>
+            <div class="field">
+              <label for="gap">Gap <span class="tip" tabindex="0" role="tooltip" data-t="Blank space between adjacent stickers so the cutter blade has a safe path.">i</span></label>
+              <input type="number" id="gap" value="0.125" step="0.005" min="0">
+            </div>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="margin">Sheet Margin <span class="tip" tabindex="0" role="tooltip" data-t="Unprintable area around all 4 edges of the physical sheet.">i</span></label>
+              <input type="number" id="margin" value="0.2" step="0.05" min="0">
+            </div>
+            <div class="field">
+              <label for="gripper">Gripper Edge <span class="tip" tabindex="0" role="tooltip" data-t="Extra unprintable area at the bottom edge (for printer rollers to grab the sheet).">i</span></label>
+              <input type="number" id="gripper" value="0.5" step="0.05" min="0">
+            </div>
+          </div>
+          <p style="font-size:0.75rem; color:var(--text-secondary); margin-top:0.75rem; font-style:italic;">Confirm these values with your print shop before running large jobs.</p>
+        </div>
+      </details>
+    </div> <!-- Close Choose Your Sticker Size section -->
 
     <h2 class="step-header" style="margin-top: 1.5rem;">Step 2: Artwork (Optional)</h2>
     <!-- Image Upload -->
@@ -1084,34 +1114,6 @@
       </div>
     </div>
 
-    <!-- Print Constraints -->
-    <details class="card details-card" style="margin-top: 1.5rem;">
-      <summary>Advanced: Print Constraints</summary>
-      <div class="details-content">
-        <div class="row">
-          <div class="field">
-            <label for="bleed">Bleed <span class="tip" tabindex="0" role="tooltip" data-t="Extra area printed beyond the cut line to avoid white edges if cutting is slightly off. Added on every side of each sticker.">i</span></label>
-            <input type="number" id="bleed" value="0.0625" step="0.005" min="0">
-          </div>
-          <div class="field">
-            <label for="gap">Gap <span class="tip" tabindex="0" role="tooltip" data-t="Blank space between adjacent stickers so the cutter blade has a safe path.">i</span></label>
-            <input type="number" id="gap" value="0.125" step="0.005" min="0">
-          </div>
-        </div>
-        <div class="row">
-          <div class="field">
-            <label for="margin">Sheet Margin <span class="tip" tabindex="0" role="tooltip" data-t="Non-printable border around the sheet edge. Most printers can't print here and cutters need edge clearance.">i</span></label>
-            <input type="number" id="margin" value="0.2" step="0.01" min="0">
-          </div>
-          <div class="field">
-            <label for="gripper" title="Only relevant for commercial press sheets. Home cutting machines have no gripper edge, leave at 0.">Gripper Edge (in)</label>
-            <input type="number" id="gripper" value="0.5" step="0.01" min="0">
-          </div>
-        </div>
-        <p class="eff-help" style="margin-top: 0.5rem; border-top: none; padding-top: 0;">💡 Confirm these values with your print shop — they vary by printer.</p>
-      </div>
-    </details>
-
   </aside>
 
   <!-- ─── Workspace ─── -->
@@ -1123,6 +1125,10 @@
       <div class="stat s2"><div class="lbl">Yield / Sheet</div><div class="num" id="st-count">—</div></div>
       <div class="stat s3"><div class="lbl">Efficiency</div><div class="num" id="st-eff">—</div></div>
       <div class="stat"><div class="lbl">Grid Layout</div><div class="num" id="st-grid">—</div></div>
+      <div class="stat" id="card-total-cost" style="cursor: pointer;" onclick="document.getElementById('order-qty').scrollIntoView({behavior: 'smooth'}); document.getElementById('order-qty').focus();">
+        <div class="lbl">Total Cost</div>
+        <div class="num" id="st-total-cost" style="color: var(--text-muted); font-size: 0.85rem;">Set price &amp; qty &rarr;</div>
+      </div>
       <div class="stat s-cost" id="card-cost"><div class="lbl">Cost / Sticker</div><div class="num" id="st-cost">—</div></div>
       <div class="stat s-cost" id="card-sheets"><div class="lbl">Sheets Needed</div><div class="num" id="st-sheets">—</div></div>
     </div>
@@ -1176,11 +1182,20 @@
             <input type="number" id="order-qty" step="1" min="1" placeholder="e.g. 500">
           </div>
           <div class="field">
-            <label for="sheet-price">Sheet Price (Optional)</label>
+            <label for="sheet-price" style="display: flex; justify-content: space-between; align-items: center;">
+              <span>Material Cost (Optional)</span>
+              <span style="font-size: 0.75rem; color: var(--text-secondary); display: flex; align-items: center; gap: 0.25rem;">
+                per
+                <select id="price-per-toggle" style="padding: 0.1rem 0.25rem; font-size: 0.75rem; height: auto; min-height: 0; width: auto; background: var(--surface-1); border: 1px solid var(--border); border-radius: 4px; color: var(--text);">
+                  <option value="sheet" selected>Sheet</option>
+                  <option value="pack">Pack</option>
+                </select>
+              </span>
+            </label>
             <input type="number" id="sheet-price" step="0.01" min="0" placeholder="e.g. 1.25">
           </div>
-          <div class="field">
-            <label for="pack-qty">Pack Qty <span class="tip" tabindex="0" role="tooltip" data-t="If the price is for a pack of sheets, enter how many sheets are in the pack. Defaults to 1.">i</span></label>
+          <div class="field" id="pack-qty-wrapper" style="display: none;">
+            <label for="pack-qty">Sheets per Pack <span class="tip" tabindex="0" role="tooltip" data-t="If the cost is for a pack of sheets, enter how many sheets are in the pack. Defaults to 1.">i</span></label>
             <input type="number" id="pack-qty" step="1" min="1" value="1" placeholder="1">
           </div>
         </div>
@@ -1288,15 +1303,17 @@ const D = {
   bleed: $('bleed'), gap: $('gap'), margin: $('margin'), gripper: $('gripper'),
   custW: $('cust-w'), custH: $('cust-h'), warn: $('warn'),
   slider: $('scale-slider'), sliderVal: $('slider-val'), scaleMode: $('scale-mode'),
-  sheetPrice: $('sheet-price'), packQty: $('pack-qty'), orderQty: $('order-qty'),
+  sheetPrice: $('sheet-price'), packQty: $('pack-qty'), orderQty: $('order-qty'), pricePerToggle: $('price-per-toggle'), packQtyWrapper: $('pack-qty-wrapper'),
   artFile: $('art-file'), fname: $('fname'), btnRm: $('btn-rm'), uploadZone: $('upload-zone'),
   cands: $('cands'), btnReset: $('btn-reset-all'),
   stSize: $('st-size'), stCount: $('st-count'), stEff: $('st-eff'), stGrid: $('st-grid'),
+  cardTotalCost: $('card-total-cost'), stTotalCost: $('st-total-cost'),
   cardCost: $('card-cost'), cardSheets: $('card-sheets'), stCost: $('st-cost'), stSheets: $('st-sheets'),
   orderSummary: $('order-summary'), osPrimary: $('os-primary'), osWaste: $('os-waste'), osDetails: $('os-details'),
   cvSheet: $('cv-sheet'), cvCover: $('cv-cover'),
   pcSheet: $('pc-sheet'), pcCover: $('pc-cover'),
-  optBulb: $('opt-bulb'), btnSwapSheet: $('btn-swap-sheet'), btnSwapCover: $('btn-swap-cover')
+  optBulb: $('opt-bulb'), btnSwapSheet: $('btn-swap-sheet'), btnSwapCover: $('btn-swap-cover'),
+  btnModeSmart: $('btn-mode-smart'), btnModeCustom: $('btn-mode-custom'), modeSmart: $('mode-smart-suggestions'), modeCustom: $('mode-set-my-own')
 };
 
 let STATE = {
@@ -1804,7 +1821,7 @@ function updateStats() {
 function updateCostStats() {
   const l = STATE.activeLayout;
   const price = parseFloat(D.sheetPrice.value);
-  const pack = parseFloat(D.packQty.value) || 1;
+  const pack = (D.pricePerToggle && D.pricePerToggle.value === 'pack') ? (parseFloat(D.packQty.value) || 1) : 1;
   const order = parseInt(D.orderQty.value);
 
   // Default hide all cost elements
@@ -1812,7 +1829,12 @@ function updateCostStats() {
   D.cardSheets.style.display = 'none';
   D.orderSummary.style.display = 'none';
 
-  if (!l || l.count === 0) return;
+  if (!l || l.count === 0) {
+    D.stTotalCost.innerHTML = 'Set cost &amp; qty &rarr;';
+    D.stTotalCost.style.color = 'var(--text-muted)';
+    D.stTotalCost.style.fontSize = '0.85rem';
+    return;
+  }
 
   const hasPrice = !isNaN(price) && price > 0;
   const hasOrder = !isNaN(order) && order > 0;
@@ -1838,20 +1860,66 @@ function updateCostStats() {
     const totalCost = sheetsNeeded * costPerSheet;
     const totalProduced = sheetsNeeded * l.count;
     const wasteCount = totalProduced - order;
-    const wasteCost = wasteCount * costPerSticker;
+    
+    // Update top bar total cost card
+    D.stTotalCost.textContent = totalCost.toFixed(2);
+    D.stTotalCost.style.color = '#ffffff';
+    D.stTotalCost.style.fontSize = '';
 
-    D.osPrimary.innerHTML = `<strong>${order.toLocaleString()}</strong> stickers → <strong>${sheetsNeeded.toLocaleString()}</strong> sheets → <strong>${totalCost.toFixed(2)}</strong> total`;
+    D.osPrimary.textContent = `${totalCost.toFixed(2)} Total Cost`;
     
     if (wasteCount > 0) {
       const wastePct = ((wasteCount / totalProduced) * 100).toFixed(1);
-      D.osWaste.textContent = `Waste: ${wasteCount.toLocaleString()} stickers (${wastePct}%) · ${wasteCost.toFixed(2)} wasted`;
+      D.osWaste.textContent = `Waste: ${wasteCount.toLocaleString()} stickers (${wastePct}%) · ${((wasteCount * costPerSticker)).toFixed(2)} wasted`;
     } else {
-      D.osWaste.textContent = `Perfect fit! No wasted stickers.`;
+      D.osWaste.textContent = `Waste: ${wasteCount} extra stickers`;
     }
-    
-    D.osDetails.textContent = `Breakdown: ${costPerSticker.toFixed(3)} / sticker`;
+    D.osDetails.textContent = `(${(costPerSheet).toFixed(2)} / sheet × ${sheetsNeeded} sheets)`;
     D.orderSummary.style.display = 'flex';
+  } else {
+    D.stTotalCost.innerHTML = 'Set cost &amp; qty &rarr;';
+    D.stTotalCost.style.color = 'var(--text-muted)';
+    D.stTotalCost.style.fontSize = '0.85rem';
   }
+}
+
+// Mode Toggle Listeners
+if (D.btnModeSmart && D.btnModeCustom) {
+  D.btnModeSmart.addEventListener('click', () => {
+    D.btnModeSmart.classList.add('active');
+    D.btnModeCustom.classList.remove('active');
+    D.modeSmart.style.display = 'block';
+    D.modeCustom.style.display = 'none';
+  });
+
+  D.btnModeCustom.addEventListener('click', () => {
+    D.btnModeCustom.classList.add('active');
+    D.btnModeSmart.classList.remove('active');
+    D.modeSmart.style.display = 'none';
+    D.modeCustom.style.display = 'block';
+    
+    // Initialize custom fields if they are blank but a suggestion is active
+    if (STATE.activeW && STATE.activeH) {
+      if (!D.custW.value && !D.custH.value) {
+        D.custW.value = STATE.activeW;
+        D.custH.value = STATE.activeH;
+        D.sliderVal.textContent = 'Custom';
+        runOptimization();
+      }
+    }
+  });
+}
+
+// Pricing Toggle Listener
+if (D.pricePerToggle && D.packQtyWrapper) {
+  D.pricePerToggle.addEventListener('change', () => {
+    if (D.pricePerToggle.value === 'pack') {
+      D.packQtyWrapper.style.display = 'flex';
+    } else {
+      D.packQtyWrapper.style.display = 'none';
+    }
+    if (typeof updateCostStats === 'function') updateCostStats();
+  });
 }
 
 // ════════════════════════════════════════════════════════════════
