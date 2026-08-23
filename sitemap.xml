@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://example.com/stickersheetcalculator/</loc>
+    <loc>https://stickerimposition.netlify.app/</loc>
     <lastmod>2026-08-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://example.com/stickersheetcalculator/blog/index.html</loc>
+    <loc>https://stickerimposition.netlify.app/blog/index.html</loc>
     <lastmod>2026-08-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://example.com/stickersheetcalculator/blog/how-to-calculate-stickers-per-sheet.html</loc>
+    <loc>https://stickerimposition.netlify.app/blog/how-to-calculate-stickers-per-sheet.html</loc>
     <lastmod>2026-08-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://example.com/stickersheetcalculator/blog/understanding-print-margins-and-bleed.html</loc>
+    <loc>https://stickerimposition.netlify.app/blog/understanding-print-margins-and-bleed.html</loc>
     <lastmod>2026-08-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://example.com/stickersheetcalculator/blog/best-sticker-sheet-presets.html</loc>
+    <loc>https://stickerimposition.netlify.app/blog/best-sticker-sheet-presets.html</loc>
     <lastmod>2026-08-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://example.com/stickersheetcalculator/blog/choosing-right-sticker-material.html</loc>
+    <loc>https://stickerimposition.netlify.app/blog/choosing-right-sticker-material.html</loc>
     <lastmod>2026-08-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
